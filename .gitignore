@@ -1,0 +1,14 @@
+__pycache__
+.cache
+.idea
+build
+
+*.py[cod~]
+
+*.egg-info
+
+.spyder*
+
+examples/.ipynb_checkpoints
+examples/examples-notebook/.ipynb_checkpoints/
+
