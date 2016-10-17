@@ -1,7 +1,8 @@
 import numpy as np
 
-from geometry import norm_direction_vector, vect_perpendicular,\
-                     dist_point2line
+from .geometry import (norm_direction_vector,
+                       vect_perpendicular,
+                       dist_point2line)
 
 
 def vortex_position_in_panel(P1, P2, P3, P4):

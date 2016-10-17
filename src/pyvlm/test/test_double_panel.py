@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from panel import Panel
+from pyvlm.panel import Panel
 
 # Initial data
 V = 10.0
