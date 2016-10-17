@@ -1,3 +1,8 @@
+"""
+    The purpose of this test is to check the correct behaviour
+    of the linear equation solver entering the data manually.
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
