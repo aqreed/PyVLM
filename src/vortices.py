@@ -45,7 +45,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
 
     A = P1 + P1P2 / 4
     B = A + P1P2 / 2
-    C = P3 + P3P4 /4
+    C = P3 + P3P4 / 4
     D = C + P3P4 / 2
 
     AD = D - A

@@ -37,7 +37,7 @@ print('w11_induced =', '%4.3F' % w11, '  w12_induced =', '%4.3F' % w12)
 print('w21_induced =', '%4.3F' % w21, '  w22_induced =', '%4.3F' % w22)
 
 # Linear equation solving AX = Y
-A = np.array([[w11, w12],[w21, w22]])
+A = np.array([[w11, w12], [w21, w22]])
 v1 = -V * np.sin(alpha)
 v2 = -V * np.sin(alpha)
 Y = np.array([[v1], [v2]])
