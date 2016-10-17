@@ -1,12 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
-from geometry import norm_direction_vector, vect_perpendicular,\
-                     dist_point2line
-
-from vortices import v_induced_by_finite_vortex_line
-
-
 """
     The purpose of this test is to check the correct behaviour
     of the function that calculates the velocity induced by a
@@ -17,6 +8,11 @@ from vortices import v_induced_by_finite_vortex_line
      +=======+--------> X
     P1(0,0)  P2(0,1)
 """
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from pyvlm.vortices import v_induced_by_finite_vortex_line
 
 P1, P2 = np.array([0, 0]), np.array([1, 0])
 

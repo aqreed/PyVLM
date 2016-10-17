@@ -1,12 +1,14 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
-from panel import Panel
 """
     The purpose of this test is to check the correct behaviour
     of the Panel class, calculating the cl, cd and cm of a single
     panel for alpha values ranging from -5 to 5 degrees.
 """
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from pyvlm.panel import Panel
+
 # Initial data
 V = 10.0
 
