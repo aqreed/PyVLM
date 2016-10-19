@@ -4,22 +4,21 @@ import matplotlib.pyplot as plt
 
 def mesh(A, B, C, D, n, m):
     """
-    A +......> y     Given a trapezoid defined by vertices
-      | \            ABDC representing a wing segment that
-      |  \           complies with the VLM theory, returns
-      |   + C        the points and panels of the mesh.
-      |   |          Points are presented as an array of
-    B +---+ D        2xNp elements, being Np the sum of
-      |              points of the mesh. Panels are given
-     x               as a list of NP rows of 4 points,
-                     where NP is the sum of panels of the
-    x - chordwise    mesh. The corner points of each panel
-        direction    are already arranged in a clockwise
-    y - spanwise     fashion following this order:
-        direction        P3 +-----+ P4
-                            |
-                            |
-                         P2 +-----+ P1
+    A +......> y     Given a trapezoid defined by vertices ABDC
+      | \            representing a wing segment that complies
+      |  \           with the VLM theory, returns the points
+      |   + C        and panels of the mesh.
+      |   |          Points are presented as an array of 2xNp
+    B +---+ D        elements, being Np the sum of points of
+      |              the mesh. Panels are given as a list of
+     x               NP rows of 4 points, where NP is the sum
+                     of panels of the mesh. The corner points
+    x - chordwise    of each panel are already arranged in a
+        direction    clockwise fashion following this order:
+    y - spanwise             P3 +-----+ P4
+        direction               |
+                                |
+                             P2 +-----+ P1
 
     Parameters
     ----------
@@ -69,22 +68,3 @@ def mesh(A, B, C, D, n, m):
         mesh_panels[i].append(mesh_points[i + k + m + 2])  # P4
 
     return mesh_points, mesh_panels
-
-A = np.array([0, 0])
-B = np.array([1, 0])
-C = np.array([0.5, 1])
-D = np.array([1, 1])
-
-n = 10
-m = 10
-
-Points, Panels = mesh(A, B, C, D, n, m)
-
-for row in Panels:
-    for column in row:
-        print(column, end="")
-    print(end="\n")
-
-plt.style.use('ggplot')
-plt.plot(Points[:, 0], Points[:, 1], 'ro')
-plt.show()
