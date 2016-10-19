@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pyvlm.panel import Panel
-from mesh_generator import mesh
+from mesh_generator import Mesh
 
 # Initial data
 V = 10.0
@@ -12,18 +12,19 @@ alpha = np.deg2rad(3)
 c = 1  # panel chord length
 b = 4  # panel span length
 
-n = 3  # number of panels chordwise
-m = 3  # number of panels spanwise
-N = n * m
+n = 1  # number of panels chordwise
+m = 4  # number of panels spanwise
 
 A = np.array([0, -b/2])
 B = np.array([c, -b/2])
 C = np.array([0, b/2])
 D = np.array([c, b/2])
 
-Points, Panels = mesh(A, B, C, D, n, m)
+mesh = Mesh(A, B, C, D, n, m)
+Points, Panels = mesh.points_panels()
 
 # Calculations
+N = n * m
 A = np.zeros(shape=(N, N))
 
 for i in range(0, N):
@@ -32,15 +33,15 @@ for i in range(0, N):
     s = panel_pivot.area()
     CP = panel_pivot.control_point()
 
-    print('---- Induced vel. on panel %s...' % i)
-    print(P1, P2, P3, P4)
-    print('area = ', s, 'control point = ', CP)
+    #print('---- Induced vel. on panel %s...' % i)
+    #print(P1, P2, P3, P4)
+    #print('area = ', s, 'control point = ', CP)
 
     for j in range(0, N):
         PP1, PP2, PP3, PP4 = Panels[j][:]
         panel = Panel(PP1, PP2, PP3, PP4)
         w = panel.induced_velocity(CP)
-        print('	...by panel %s = %s' % (j, w))
+        #print('	...by panel %s = %s' % (j, w))
         A[i, j] = w
 
 np.set_printoptions(precision=4)

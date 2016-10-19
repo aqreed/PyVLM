@@ -14,13 +14,18 @@ class Panel(object):
          | | +-P--|--->
          | |   |  |   x
         P2-B---A-P1
+
+    Parameters
+    ----------
+    A, B, C, D : array_like
+                 Corner points in a 2D euclidean space
     """
 
-    def __init__(self, value1, value2, value3, value4):
-        self.P1 = value1
-        self.P2 = value2
-        self.P3 = value3
-        self.P4 = value4
+    def __init__(self, P1, P2, P3, P4):
+        self.P1 = P1
+        self.P2 = P2
+        self.P3 = P3
+        self.P4 = P4
         self.CP = 0  # control point
         self.w = 0
 
