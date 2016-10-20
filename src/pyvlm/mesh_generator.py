@@ -25,7 +25,7 @@ chord1|  \ Pf        wing segment that complies with VLM theory,
                     Coordinates of the leading edge points as
                     arrays in a 2D euclidean space
     chords : list
-             Chords in a 2D euclidean space
+             Chord lenghts
     n, m : integer
            n - nº of chordwise panels
            m - nº of spanwise panels
