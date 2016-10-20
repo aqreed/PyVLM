@@ -15,10 +15,11 @@ chord1|  \ Pf        wing segment that complies with VLM theory,
     x - chordwise    of each panel are already arranged in a
         direction    clockwise fashion following this order:
     y - spanwise
-        direction            P3 +-----+ P4
+        direction            P2 +---+ P3...> y
+                                |   |
+                             P1 +   + P4
                                 |
-                                |
-    Parameters               P2 +-----+ P1
+    Parameters                 x
     ----------
     leading_edges : list (containing arrays)
                     Coordinates of the leading edge points as
