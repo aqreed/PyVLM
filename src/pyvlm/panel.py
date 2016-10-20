@@ -17,8 +17,8 @@ class Panel(object):
 
     Parameters
     ----------
-    A, B, C, D : array_like
-                 Corner points in a 2D euclidean space
+    P1, P2, P3, P4 : array_like
+                     Corner points in a 2D euclidean space
     """
 
     def __init__(self, P1, P2, P3, P4):
