@@ -46,3 +46,7 @@ for i in range(0, N):
 
 np.set_printoptions(precision=4)
 print('\n','Matrix A =', '\n', A, '\n')
+
+plt.style.use('ggplot')
+plt.plot(Points[:, 0], Points[:, 1], 'ro')
+plt.show()
