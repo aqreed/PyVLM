@@ -1,12 +1,11 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class Mesh(object):
     """
    Pi +......> y     Given a trapezoid defined by vertices Pi
       | \            and Pf and chords 1 and 2 representing a
-chord1|  \ Pf        wing segment that complies with VLM theory
+chord1|  \ Pf        wing segment that complies with VLM theory,
       |   +          returns the points and panels of the mesh.
       |   |chord2    Points are presented as an array of 2xNp
       +---+          elements, being Np the sum of points of
@@ -15,14 +14,15 @@ chord1|  \ Pf        wing segment that complies with VLM theory
                      of panels of the mesh. The corner points
     x - chordwise    of each panel are already arranged in a
         direction    clockwise fashion following this order:
-    y - spanwise             P3 +-----+ P4
-        direction               |
+    y - spanwise
+        direction            P3 +-----+ P4
                                 |
-                             P2 +-----+ P1
-    Parameters
+                                |
+    Parameters               P2 +-----+ P1
     ----------
-    leading_edges : list
-                    Corner points in a 2D euclidean space
+    leading_edges : list (containing arrays)
+                    Coordinates of the leading edge points as
+                    arrays in a 2D euclidean space
     chords : list
              Chords in a 2D euclidean space
     n, m : integer

@@ -8,10 +8,10 @@ from .vortices import (vortex_position_in_panel,
 class Panel(object):
     """
            y ^
-             |              Points defining the panel are named
-        P3-C-|-D-P4         clockwise. Points defining the horseshoe
-         | | | |  |         are named clockwise as well.
-         | | +-P--|--->
+             |              Points defining the panel are
+        P3-C-|-D-P4         named clockwise. Points defining
+         | | | |  |         the horseshoe are named clockwise
+         | | +-P--|--->     as well.
          | |   |  |   x
         P2-B---A-P1
 
@@ -36,8 +36,10 @@ class Panel(object):
         return area_4points(self.P1, self.P2, self.P3, self.P4)
 
     def _vortex_position(self):
-        points_of_the_vortex = vortex_position_in_panel(self.P1, self.P2,
-                                                        self.P3, self.P4)
+        points_of_the_vortex = vortex_position_in_panel(self.P1,
+                                                        self.P2,
+                                                        self.P3,
+                                                        self.P4)
         return points_of_the_vortex
 
     def control_point(self):
@@ -46,7 +48,9 @@ class Panel(object):
 
     def induced_velocity(self, control_point_pos):
         _points_vortex = self._vortex_position()
-        v = v_induced_by_horseshoe_vortex(control_point_pos, _points_vortex[1],
-                                          _points_vortex[2], _points_vortex[3],
+        v = v_induced_by_horseshoe_vortex(control_point_pos,
+                                          _points_vortex[1],
+                                          _points_vortex[2],
+                                          _points_vortex[3],
                                           _points_vortex[4])
         return v

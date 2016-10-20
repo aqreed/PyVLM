@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pyvlm.panel import Panel
-from mesh_generator import Mesh
+from pyvlm.mesh_generator import Mesh
 
 # Initial data
 V = 10.0
@@ -45,7 +45,7 @@ for i in range(0, N):
         A[i, j] = w
 
 np.set_printoptions(precision=4)
-print('\n','Matrix A =', '\n', A, '\n')
+print('\n', 'Matrix A =', '\n', A, '\n')
 
 plt.style.use('ggplot')
 plt.plot(Points[:, 0], Points[:, 1], 'ro')
