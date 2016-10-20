@@ -16,9 +16,9 @@ n = 2  # number of panels chordwise
 m = 4  # number of panels spanwise
 
 A = np.array([0, -b/2])
-B = np.array([0, b/2])
+B = np.array([c/2, b/2])
 leading_edges = [A, B]
-chord = [1, 1]
+chord = [c, c/2]
 
 mesh = Mesh(leading_edges, chord, n, m)
 Points, Panels = mesh.points_panels()
