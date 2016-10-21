@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def norm_direction_vector(A, B):
+def norm_dir_vect(A, B):
     """
     Normalized direction vector from point A to point B
 
@@ -15,7 +15,8 @@ def norm_direction_vector(A, B):
     a : array_like
     """
     if (A == B).all():
-        raise ValueError("Can't calculate vector, same points")
+        msg = "Can't calculate vector, same points"
+        raise ValueError(msg)
 
     a = (B - A) / np.linalg.norm(B - A)
     return a
@@ -36,7 +37,8 @@ def vect_perpendicular(a):
     b : array_like
     """
     if (a == np.zeros_like(a)).all():
-        raise ValueError("Can't calculate, null vector")
+        msg = "Can't calculate, null vector"
+        raise ValueError(msg)
 
     b = np.empty_like(a)
     b[0] = a[1]
@@ -63,7 +65,8 @@ def dist_point2line(P, A, B):
     b = vect_perpendicular(a)
 
     if np.cross((B - P), a) == 0:
-        raise ValueError('Point P belongs to the line AB')
+        msg = 'Point P belongs to the line AB'
+        raise ValueError(msg)
 
     d = abs(np.vdot((B - P), b))
     return d
@@ -92,7 +95,8 @@ def area_4points(A, B, C, D):
     AD = D - A
 
     if np.sign(np.cross(AB, AC)) != np.sign(np.cross(AC, AD)):
-        raise ValueError('Points not in a clockwise/counterclockwise fashion')
+        msg = 'Points not in a clockwise/counterclockwise fashion'
+        raise ValueError(msg)
 
     S = np.cross(A, B) + np.cross(B, C) + np.cross(C, D) + np.cross(D, A)
 
