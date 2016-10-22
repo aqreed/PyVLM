@@ -7,11 +7,11 @@ class Mesh(object):
       | \            and Pf and chords 1 and 2 representing a
 chord1|  \ Pf        wing segment that complies with VLM theory,
       |   +          returns the points and panels of the mesh.
-      |   |chord2    Points are presented as an array of 2xNp
-      +---+          elements, being Np the sum of points of
-      |              the mesh. Panels are given as a list of
-     x               NP rows of 4 points, where NP is the sum
-                     of panels of the mesh. The corner points
+      |   |chord2    Points are presented as a list Np elements,
+      +---+          being Np the sum of points of the mesh.
+      |              Panels are given as a list of NP rows
+     x               of 4 points, where NP is the sum of
+                     panels of the mesh. The corner points
     x - chordwise    of each panel are already arranged in a
         direction    clockwise fashion following this order:
     y - spanwise
@@ -31,7 +31,7 @@ chord1|  \ Pf        wing segment that complies with VLM theory,
            m - nº of spanwise panels
     Returns
     -------
-    mesh_points : array_like
+    mesh_points : list
                   Mesh points
     mesh_panels : list
                   Mesh panels defined by 4 points
@@ -52,17 +52,13 @@ chord1|  \ Pf        wing segment that complies with VLM theory,
         m = self.m
 
         N_points = (n + 1) * (m + 1)
-        #mesh_points = np.zeros(shape=(N_points, 2))
-        #k = 0
         mesh_points = []
         for i in range(0, n + 1):
             PiPf = Pf - Pi
             P = Pi
             for j in range(0, m + 1):
-                #mesh_points[k] = P
                 mesh_points.append(P)
                 P = P + PiPf / m
-                #k += 1
             Pi = Pi + chord_1 / n
             Pf = Pf + chord_2 / n
 
