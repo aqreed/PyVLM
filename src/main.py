@@ -47,6 +47,24 @@ for i in range(0, N):
 np.set_printoptions(precision=4)
 print('\n', 'Matrix A =', '\n', A, '\n')
 
+#--------------
+
+N = len(Points)
+
+print('Points')
+for i in range(0, len(Points)):
+    print(i, Points[i])
+
+print('Panels')
+for i in range(0, len(Panels)):
+    print(i, Panels[i])
+
 plt.style.use('ggplot')
-plt.plot(Points[:, 0], Points[:, 1], 'ro')
+P = np.zeros(shape=(N, 2))
+for i in range(0, N):
+    P[i, :] = Points[i]
+    #P = Points[i]
+#    print(P)
+    plt.plot(P[:, 0], P[:, 1], 'ro')
+    #plt.plot(P[0], P[1], 'ro')
 plt.show()
