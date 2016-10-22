@@ -52,15 +52,17 @@ chord1|  \ Pf        wing segment that complies with VLM theory,
         m = self.m
 
         N_points = (n + 1) * (m + 1)
-        mesh_points = np.zeros(shape=(N_points, 2))
-        k = 0
+        #mesh_points = np.zeros(shape=(N_points, 2))
+        #k = 0
+        mesh_points = []
         for i in range(0, n + 1):
             PiPf = Pf - Pi
             P = Pi
             for j in range(0, m + 1):
-                mesh_points[k] = P
+                #mesh_points[k] = P
+                mesh_points.append(P)
                 P = P + PiPf / m
-                k += 1
+                #k += 1
             Pi = Pi + chord_1 / n
             Pf = Pf + chord_2 / n
 
