@@ -9,18 +9,19 @@ V = 10.0
 alpha = np.deg2rad(3)
 
 # Grid generator
-c = 1  # panel chord length
-b = 4  # panel span length
+c = 4  # panel chord length
+b = 10  # panel span length
 
 n = 2  # number of panels chordwise
-m = 4  # number of panels spanwise
+m = 3  # number of panels spanwise
 
-A = np.array([0, 0])
-B = np.array([0, b/2])
-C = np.array([c/2, b])
+A = np.array([c, -b/2])
+B = np.array([0, -b/10])
+C = np.array([0, b/10])
+D = np.array([c, b/2])
 
-leading_edges_coord = [A, B, C]
-chord_lengths = [c, c, c/2]
+leading_edges_coord = [A, B, C, D]
+chord_lengths = [c/4, c, c, c/4]
 
 Nle = len(leading_edges_coord)
 Nch = len(chord_lengths)
@@ -41,11 +42,11 @@ for k in range(0, Nle - 1):
     Points.extend(Points_)
     Panels.extend(Panels_)
 
-# Data output
+# Grid data output
+np.set_printoptions(precision=2)
 print('\n', 'Nº of points = ', len(Points))
 for i in range(0, len(Points)):
     print('Point %s =' % i, Points[i])
-
 print('\n', 'Nº of Panels = ', len(Panels))
 for i in range(0, len(Panels)):
     print('Panel %s =' % i, Panels[i])
@@ -59,7 +60,6 @@ for i in range(0, N):
     panel_pivot = Panel(P1, P2, P3, P4)
     s = panel_pivot.area()
     CP = panel_pivot.control_point()
-
 #    print('---- Induced vel. on panel %s...' % i)
 #    print(P1, P2, P3, P4)
 #    print('area = ', s, 'control point = ', CP)
@@ -68,11 +68,10 @@ for i in range(0, N):
         PP1, PP2, PP3, PP4 = Panels[j][:]
         panel = Panel(PP1, PP2, PP3, PP4)
         w = panel.induced_velocity(CP)
- #       print('	...by panel %s = %s' % (j, w))
         A[i, j] = w
+#        print('	...by panel %s = %s' % (j, w))
 
-np.set_printoptions(precision=4)
-#print('\n', 'Matrix A =', '\n', A, '\n')
+print('\n', 'Matrix A =', '\n', A, '\n')
 
 # Plotting
 plt.style.use('ggplot')
