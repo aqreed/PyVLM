@@ -65,10 +65,9 @@ def dist_point2line(P, A, B):
     b = vect_perpendicular(a)
 
     if np.cross((B - P), a) == 0:
-        msg = 'Point P belongs to the line AB'
-        raise ValueError(msg)
-
-    d = abs(np.vdot((B - P), b))
+        d = 0
+    else:
+        d = abs(np.vdot((B - P), b))
     return d
 
 
