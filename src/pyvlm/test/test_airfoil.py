@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pyvlm.airfoil import camber_gradient_NACA4
+from pyvlm.airfoils import camber_gradient_NACA4
 
 # Plotting
 plt.style.use('ggplot')
