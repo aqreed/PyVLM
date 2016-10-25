@@ -50,6 +50,7 @@ chord1|   |          along with the chordwise position of each
         self.m = m
         self.mesh_points = []
         self.mesh_panels = []
+        self.panel_chord = []
         self.panel_pos_chordwise = []
 
     def points(self):
@@ -92,7 +93,7 @@ chord1|   |          along with the chordwise position of each
 
         return self.mesh_panels
 
-    def panel_position(self):
+    def panel_chord_position(self):
         Pi = self.leading_edges[0]
         chord_1 = np.array([self.chords[0], 0])
         n = self.n
@@ -105,10 +106,13 @@ chord1|   |          along with the chordwise position of each
             P1 = self.mesh_panels[k * m][0]
             P2 = self.mesh_panels[k * m][1]
 
-            panel_center = P2 + (P1 - P2) / 2
+            chord = P1 - P2
+
+            panel_center = P2 + chord / 2
             le2panel_distance = np.linalg.norm(panel_center - Pi)
-            pos = le2panel_distance / np.linalg.norm(chord_1)
+            relative_pos = le2panel_distance / np.linalg.norm(chord_1)
 
-            self.panel_pos_chordwise.append(pos)
+            self.panel_chord.append(chord)
+            self.panel_pos_chordwise.append(relative_pos)
 
-        return self.panel_pos_chordwise
+        return self.panel_chord, self.panel_pos_chordwise
