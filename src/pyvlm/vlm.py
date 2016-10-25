@@ -55,13 +55,13 @@ class PyVLM(object):
 
             mesh = Mesh(leading_edges, chords, n, m)
             Points_ = mesh.points()
-            Panel_points_ = mesh.panels()
-            Chord_, Chordwise_pos_ = mesh.panel_chord_position()
+            Panel_points_ = mesh.panel()
+            Chords_, Chordwise_panel_position_ = mesh.panel_chord_position()
 
             self.Points.extend(Points_)
             self.Panel_points.extend(Panel_points_)
-            self.Chords.extend(Chord_)
-            self.Chordwise_panel_position.extend(Chordwise_pos_)
+            self.Chords.extend(Chords_)
+            self.Chordwise_panel_position.extend(Chordwise_panel_position_)
 
         return (self.Points, self.Panel_points,
                 self.Chords, self.Chordwise_panel_position)

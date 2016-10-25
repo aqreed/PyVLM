@@ -72,7 +72,7 @@ chord1|   |          along with the chordwise position of each
 
         return self.mesh_points
 
-    def panels(self):
+    def panel(self):
         n = self.n
         m = self.m
 
