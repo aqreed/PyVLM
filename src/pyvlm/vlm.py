@@ -8,6 +8,26 @@ from .airfoils import camber_gradient_NACA4
 
 class PyVLM(object):
     """
+    Given the geometry, angle of attack, upstream velocity and
+    mesh chordwise and spanwise density, applies the VLM theory
+    to the surface.
+
+    Parameters
+    ----------
+    le_coord : list (containing arrays)
+                    Coordinates of the leading edge points as
+                    arrays in a 2D euclidean space
+    ch_le : list
+             Chord lenghts corresponding to the sections defined
+             by the leading edge coordinates
+    V : float
+        Upstream flow velocity
+    alpha : float
+            Angle of attack of the surface
+    n, m : integer
+           n - nº of chordwise panels
+           m - nº of spanwise panels
+
     """
 
     def __init__(self, le_coord, ch_le, V, alpha, n, m):
@@ -46,7 +66,7 @@ class PyVLM(object):
             self.Panels.extend(Panels_)
             self.Chord_pos.extend(Chordwise_pos_)
 
-        # Computing of the matrix A (induced velocities)
+        # Computing of the induced velocities
         N = len(self.Panels)
         A = np.zeros(shape=(N, N))
 
@@ -62,7 +82,7 @@ class PyVLM(object):
                 w = panel.induced_velocity(CP)
                 A[i, j] = w
 
-        # Linear equation solving AX = Y
+        # Circulation values by solving the linear equation (AX = Y)
         Y = np.zeros(shape=len(self.Panels))
 
         for i in range(0, len(self.Panels)):
@@ -104,4 +124,3 @@ class PyVLM(object):
 # cl_plot = (2.0 * X) / (V * c)
 # cd_plot = (-2.0 * abs(X) * w * b) / (V**2 * S)
 # cm_plot = - cl_plot[i] * (0.25 * c) / c
-
