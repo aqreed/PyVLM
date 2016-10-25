@@ -14,110 +14,92 @@ class PyVLM(object):
 
     Parameters
     ----------
+    V : float
+        Upstream flow velocity
+    alpha : float
+            Angle of attack of the surface
     le_coord : list (containing arrays)
                     Coordinates of the leading edge points as
                     arrays in a 2D euclidean space
     ch_le : list
              Chord lenghts corresponding to the sections defined
              by the leading edge coordinates
-    V : float
-        Upstream flow velocity
-    alpha : float
-            Angle of attack of the surface
     n, m : integer
            n - nº of chordwise panels
            m - nº of spanwise panels
-
     """
 
-    def __init__(self, le_coord, ch_le, V, alpha, n, m):
-        self.leading_edges_coord = le_coord
-        self.chord_lengths = ch_le
+
+    def __init__(self,  V, alpha):
         self.V = V
         self.alpha = alpha
-        self.n = n
-        self.m = m
 
-        if len(self.leading_edges_coord) != len(self.chord_lengths):
+        self.Points = []
+        self.Panel_points = []
+        self.Chords = []
+        self.Chordwise_panel_position = []
+
+    def create_geometry(self, le_coord, ch_le, n, m):
+        if len(le_coord) != len(ch_le):
             msg = 'Same number of chords and l.e. required'
             raise ValueError(msg)
 
-    def _calculations(self):
-        n = self.n
-        m = self.m
-        leading_edges_coord = self.leading_edges_coord
-        chord_lengths = self.chord_lengths
-
         # Mesh generation
-        Nle = len(leading_edges_coord)
+        Nle = len(le_coord)
 
         for k in range(0, Nle - 1):
-            leading_edges = [leading_edges_coord[k],
-                             leading_edges_coord[k + 1]]
-            chords = [chord_lengths[k],
-                      chord_lengths[k + 1]]
+            leading_edges = [le_coord[k],
+                             le_coord[k + 1]]
+            chords = [ch_le[k],
+                      ch_le[k + 1]]
 
             mesh = Mesh(leading_edges, chords, n, m)
             Points_ = mesh.points()
-            Panels_ = mesh.panels()
-            Chordwise_pos_ = mesh.panel_position()
+            Panel_points_ = mesh.panels()
+            Chord_, Chordwise_pos_ = mesh.panel_chord_position()
 
             self.Points.extend(Points_)
-            self.Panels.extend(Panels_)
-            self.Chord_pos.extend(Chordwise_pos_)
+            self.Panel_points.extend(Panel_points_)
+            self.Chords.extend(Chord_)
+            self.Chordwise_panel_position.extend(Chordwise_pos_)
+
+        return (self.Points, self.Panel_points,
+                self.Chords, self.Chordwise_panel_position)
+
+    def vlm(self):
+        Points = self.Points
+        Panel_points = self.Panel_points
+        Chordwise_panel_position = self.Chordwise_panel_position
+
+        V = self.V
+        alpha = self.alpha
 
         # Computing of the induced velocities
-        N = len(self.Panels)
+        N = len(Panel_points)
         A = np.zeros(shape=(N, N))
 
         for i in range(0, N):
-            P1, P2, P3, P4 = self.Panels[i][:]
+            P1, P2, P3, P4 = Panel_points[i][:]
             panel_pivot = Panel(P1, P2, P3, P4)
             s = panel_pivot.area()
             CP = panel_pivot.control_point()
 
             for j in range(0, N):
-                PP1, PP2, PP3, PP4 = self.Panels[j][:]
+                PP1, PP2, PP3, PP4 = Panel_points[j][:]
                 panel = Panel(PP1, PP2, PP3, PP4)
                 w = panel.induced_velocity(CP)
                 A[i, j] = w
 
         # Circulation values by solving the linear equation (AX = Y)
-        Y = np.zeros(shape=len(self.Panels))
+        Y = np.zeros(shape=N)
 
-        for i in range(0, len(self.Panels)):
-            Y[i] = self.alpha - camber_gradient_NACA4(self.Chord_pos[i])
+        for i in range(0, N):
+            Y[i] = alpha - camber_gradient_NACA4(Chordwise_panel_position[i])
             Y[i] *= -self.V
 
         X = np.linalg.solve(A, Y)
 
-        self.Y = Y
-        self.A = A
-        self.gamma = X
-
-    def get_geometry(self):
-        self.Points = []
-        self.Panels = []
-        self.Chord_pos = []
-
-        self.Y = 0
-        self.A = 0
-        self.gamma = 0
-        self._calculations()
-
-        return self.Points, self.Panels, self.Chord_pos
-
-    def get_linear_eq(self):
-        self.Points = []
-        self.Panels = []
-        self.Chord_pos = []
-
-        self.Y = 0
-        self.A = 0
-        self.gamma = 0
-        self._calculations()
-
-        return self.Y, self.A, self.gamma
+        return Y, A, X
 
 
 # gamma_plot = X
