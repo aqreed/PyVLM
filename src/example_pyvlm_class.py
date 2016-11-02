@@ -2,9 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pyvlm.vlm import PyVLM
-from pyvlm.panel import Panel
-from pyvlm.mesh_generator import Mesh
-from pyvlm.airfoils import camber_gradient_NACA4
 
 V = 20.0
 alpha = np.deg2rad(3)
@@ -24,13 +21,13 @@ D = np.array([c, b/2])
 leading_edges_coord = [A, B, C, D]
 chord_lengths = [c/4, c, c, c/4]
 
-example = PyVLM(V, alpha)
+pilatusPC12 = PyVLM(V, alpha)
 
-Points, Panels, Chords, Chordwise_panel_pos = example.create_geometry(
+Points, Panels, Chords, Chordwise_panel_pos = pilatusPC12.add_geometry(
                                               leading_edges_coord,
                                               chord_lengths, n, m)
 
-Y, A, X = example.vlm()
+Y, A, X = pilatusPC12.vlm()
 
 
 np.set_printoptions(precision=3)

@@ -39,7 +39,7 @@ class PyVLM(object):
         self.Chords = []
         self.Chordwise_panel_position = []
 
-    def create_geometry(self, le_coord, ch_le, n, m):
+    def add_geometry(self, le_coord, ch_le, n, m):
         if len(le_coord) != len(ch_le):
             msg = 'Same number of chords and l.e. required'
             raise ValueError(msg)
