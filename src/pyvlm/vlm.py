@@ -18,12 +18,12 @@ class PyVLM(object):
         Upstream flow velocity
     alpha : float
             Angle of attack of the surface
-    le_coord : list (containing arrays)
-                    Coordinates of the leading edge points as
-                    arrays in a 2D euclidean space
-    ch_le : list
-             Chord lenghts corresponding to the sections defined
-             by the leading edge coordinates
+    lead_edge_coord : list (containing arrays)
+                      Coordinates of the leading edge points
+                      as arrays in a 2D euclidean space
+    chord_lengths : list
+                    Chord lenghts corresponding to the sections
+                    defined by the leading edge coordinates
     n, m : integer
            n - nº of chordwise panels
            m - nº of spanwise panels
@@ -39,19 +39,19 @@ class PyVLM(object):
         self.Chords = []
         self.Chordwise_panel_position = []
 
-    def add_geometry(self, le_coord, ch_le, n, m):
-        if len(le_coord) != len(ch_le):
+    def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
+        if len(lead_edge_coord) != len(chord_lengths):
             msg = 'Same number of chords and l.e. required'
             raise ValueError(msg)
 
         # Mesh generation
-        Nle = len(le_coord)
+        Nle = len(lead_edge_coord)
 
         for k in range(0, Nle - 1):
-            leading_edges = [le_coord[k],
-                             le_coord[k + 1]]
-            chords = [ch_le[k],
-                      ch_le[k + 1]]
+            leading_edges = [lead_edge_coord[k],
+                             lead_edge_coord[k + 1]]
+            chords = [chord_lengths[k],
+                      chord_lengths[k + 1]]
 
             mesh = Mesh(leading_edges, chords, n, m)
             Points_ = mesh.points()
