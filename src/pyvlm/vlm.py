@@ -29,14 +29,12 @@ class PyVLM(object):
            m - nº of spanwise panels
     """
 
-
     def __init__(self,  V, alpha):
         self.V = V
         self.alpha = alpha
 
         self.Points = []
         self.Panel_points = []
-        self.Chords = []
         self.Chordwise_panel_position = []
 
     def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
@@ -56,15 +54,14 @@ class PyVLM(object):
             mesh = Mesh(leading_edges, chords, n, m)
             Points_ = mesh.points()
             Panel_points_ = mesh.panel()
-            Chords_, Chordwise_panel_position_ = mesh.panel_chord_position()
+            Chordwise_panel_position_ = mesh.panel_chord_position()
 
             self.Points.extend(Points_)
             self.Panel_points.extend(Panel_points_)
-            self.Chords.extend(Chords_)
             self.Chordwise_panel_position.extend(Chordwise_panel_position_)
 
         return (self.Points, self.Panel_points,
-                self.Chords, self.Chordwise_panel_position)
+                self.Chordwise_panel_position)
 
     def vlm(self):
         Points = self.Points
