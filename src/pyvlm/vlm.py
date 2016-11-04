@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from .panel import Panel
 from .mesh_generator import Mesh
-from .airfoils import camber_gradient_NACA4
+from .airfoils import NACA4
 
 
 class PyVLM(object):
@@ -90,8 +90,9 @@ class PyVLM(object):
         # Circulation values by solving the linear equation (AX = Y)
         Y = np.zeros(shape=N)
 
+        airfoil = NACA4()
         for i in range(0, N):
-            Y[i] = alpha - camber_gradient_NACA4(Chordwise_panel_position[i])
+            Y[i] = alpha - airfoil.camber_gradient(Chordwise_panel_position[i])
             Y[i] *= -self.V
 
         X = np.linalg.solve(A, Y)
