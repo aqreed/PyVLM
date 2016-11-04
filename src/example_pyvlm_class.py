@@ -23,7 +23,7 @@ chord_lengths = [c/4, c, c, c/4]
 
 pilatusPC12 = PyVLM(V, alpha)
 
-Points, Panels, Chords, Chordwise_panel_pos = pilatusPC12.add_geometry(
+Points, Panels, Chordwise_panel_pos = pilatusPC12.add_geometry(
                                               leading_edges_coord,
                                               chord_lengths, n, m)
 
