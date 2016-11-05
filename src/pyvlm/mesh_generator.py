@@ -53,6 +53,10 @@ chord1|   |          along with the chordwise position of each
         self.panel_pos_chordwise = []
 
     def points(self):
+        """ Yields (n+1)*(m+1) equally spaced points, span and
+            chordwise, for each geometry defined with the
+            arguments """
+
         Pi = self.leading_edges[0]
         Pf = self.leading_edges[1]
         chord_1 = np.array([self.chords[0], 0])
@@ -72,6 +76,11 @@ chord1|   |          along with the chordwise position of each
         return self.mesh_points
 
     def panel(self):
+        """ Yields n*m panels, each panel composed by 4 points
+            previously calculated. The points are properly
+            arranged to serve as framework for the horseshoe
+            vortices """
+
         n = self.n
         m = self.m
 
@@ -93,6 +102,10 @@ chord1|   |          along with the chordwise position of each
         return self.mesh_panels
 
     def panel_chord_position(self):
+        """ Yields the position of each panel referred to the
+            local chord, which is needed to compute its
+            inclination, aka corresponding camber gradient """
+
         Pi = self.leading_edges[0]
         chord_1 = np.array([self.chords[0], 0])
         n = self.n

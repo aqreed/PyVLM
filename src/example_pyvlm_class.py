@@ -3,13 +3,15 @@ import matplotlib.pyplot as plt
 
 from pyvlm.vlm import PyVLM
 
-## FLIGHT CONDITION PARAMETERS ##
+
+# FLIGHT CONDITION PARAMETERS #
 V = 20.0
 alpha = np.deg2rad(3)
 
 pilatusPC12 = PyVLM(V, alpha)
 
-## GEOMETRY DEFINITION ##
+
+# GEOMETRY DEFINITION #
 # Parameters
 c = 2.15  # root chord length
 b = 16.28  # panel span length
@@ -46,10 +48,12 @@ Points, Panels, Chordwise_panel_pos = pilatusPC12.add_geometry(
 #                                                   leading_edges_coord,
 #                                                   chord_lengths, n, m)
 
-## SIMULATION ##
+
+# SIMULATION #
 Y, A, X = pilatusPC12.vlm()
 
-## PRINTING AND PLOTTING ##
+
+# PRINTING AND PLOTTING #
 np.set_printoptions(precision=3)
 
 print('\n', 'Nº of points = ', len(Points))

@@ -52,9 +52,9 @@ class NACA4(object):
         P = self.P
 
         if x < P:
-            z = (M/P**2) * (2*P*x - x**2)
+            z = (M/P**2) * x * (2*P - x)
         else:
-            z = (M / (1 - P)**2) * (1 - 2*P + 2*P*x - x**2)
+            z = (M / (1 - P)**2) * (1 - 2*P + x * (2*P - x))
 
         return z
 

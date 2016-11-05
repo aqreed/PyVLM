@@ -29,7 +29,7 @@ class PyVLM(object):
            m - nº of spanwise panels
     """
 
-    def __init__(self,  V, alpha):
+    def __init__(self, V, alpha):
         self.V = V
         self.alpha = alpha
 
@@ -38,20 +38,29 @@ class PyVLM(object):
         self.Chordwise_panel_position = []
 
     def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
+        """ Allows to add wings, stabilizers, canard wings or any
+            other lifting surface to the mesh, defined by its chords
+            location (leading edge) and length. Also the density of
+            the mesh can be controlled by n and m """
+
         if len(lead_edge_coord) != len(chord_lengths):
             msg = 'Same number of chords and l.e. required'
             raise ValueError(msg)
 
-        # Mesh generation
+        # MESH GENERATION
         Nle = len(lead_edge_coord)
 
         for k in range(0, Nle - 1):
+            # When more than two chords are provided, it iterates
+            # through the list containing both location and length
+
             leading_edges = [lead_edge_coord[k],
                              lead_edge_coord[k + 1]]
             chords = [chord_lengths[k],
                       chord_lengths[k + 1]]
 
             mesh = Mesh(leading_edges, chords, n, m)
+
             Points_ = mesh.points()
             Panel_points_ = mesh.panel()
             Chordwise_panel_position_ = mesh.panel_chord_position()
@@ -64,14 +73,21 @@ class PyVLM(object):
                 self.Chordwise_panel_position)
 
     def vlm(self):
-        Points = self.Points
+        """ For a given set of panels (defined by its 4 points) and
+            their chordwise position (referred to the local chord),
+            both presented as lists, computes the induced velocity
+            produced by all the associated horseshoe vortices on each
+            panel, calculated on its control point where the boundary
+            condition will be imposed. Computes the circulation by
+            solving the linear equation """
+
         Panel_points = self.Panel_points
         Chordwise_panel_position = self.Chordwise_panel_position
 
         V = self.V
         alpha = self.alpha
 
-        # Computing of the induced velocities
+        # INDUCED VELOCITIES
         N = len(Panel_points)
         A = np.zeros(shape=(N, N))
 
@@ -87,7 +103,7 @@ class PyVLM(object):
                 w = panel.induced_velocity(CP)
                 A[i, j] = w
 
-        # Circulation values by solving the linear equation (AX = Y)
+        # CIRCULATION by solving the linear equation (AX = Y)
         Y = np.zeros(shape=N)
 
         airfoil = NACA4()

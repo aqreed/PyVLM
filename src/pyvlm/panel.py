@@ -27,30 +27,43 @@ class Panel(object):
         self.P3 = P3
         self.P4 = P4
         self.CP = 0  # control point
-        self.w = 0
-
-    def get_panel_position(self):
-        return self.P1, self.P2, self.P3, self.P4
+        self.w = 0  # induced velocity
 
     def area(self):
+        """ Yields the area calculated with the points provided
+            as arguments """
+
         return area_4points(self.P1, self.P2, self.P3, self.P4)
 
     def _vortex_position(self):
+        """ Returns the points that define the position of the
+            vortex horseshoe within the panel, called ABCD in
+            documentation above plus the control point """
+
         points_of_the_vortex = vortex_position_in_panel(self.P1,
                                                         self.P2,
                                                         self.P3,
                                                         self.P4)
+
         return points_of_the_vortex
 
     def control_point(self):
+        """ Returns the position of the control point """
+
         control_point_position = self._vortex_position()[0]
+
         return control_point_position
 
     def induced_velocity(self, control_point_pos):
+        """ Calculates and returns the induced velocity by a
+            horseshoe vortex on a control point, defined as
+            argument of the method """
+
         _points_vortex = self._vortex_position()
         v = v_induced_by_horseshoe_vortex(control_point_pos,
                                           _points_vortex[1],
                                           _points_vortex[2],
                                           _points_vortex[3],
                                           _points_vortex[4])
+
         return v

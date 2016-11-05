@@ -34,6 +34,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
             is applied
         A, B, C, D - points that define the horseshoe position
     """
+
     i_inf = np.array([1, 0])  # x_Inf(+) direction vector
     P1P2 = P2 - P1
     P3P4 = P4 - P3
@@ -42,6 +43,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
     if np.cross(P1P2, i_inf) != 0:
         msg = 'P1P2 segment not aligned with OX'
         raise ValueError(msg)
+
     if np.cross(P3P4, i_inf) != 0:
         msg = 'P3P4 segment not aligned with OX'
         raise ValueError(msg)
@@ -55,6 +57,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
     P = A + AD / 2
 
     results = [P, A, B, C, D]
+
     return results
 
 
@@ -86,6 +89,7 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     -------
     v : float
     """
+
     i_inf = np.array([1, 0])  # x_Inf(+) direction vector
     i_1 = norm_dir_vect(A, B)  # trailing vortex(1) dir. vector
     i_2 = norm_dir_vect(B, C)  # bound vortex(2) dir. vector
@@ -94,9 +98,11 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     if np.cross(i_1, i_inf) != 0:
         msg = '1st trailing vortex segment not aligned with OX'
         raise ValueError(msg)
+
     if np.cross(i_2, i_inf) == 0:
         msg = 'Bound vortex segment aligned with OX'
         raise ValueError(msg)
+
     if np.cross(i_3, i_inf) != 0:
         msg = '2nd trailing vortex segment not aligned with OX'
         raise ValueError(msg)
@@ -132,6 +138,7 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
         v_3 = sign_3 * (gamma/(4 * np.pi * h_3)) * (cos_1 + 1)
 
     v = v_1 + v_2 + v_3  # Total induced velocity in P
+
     return v
 
 
@@ -167,4 +174,5 @@ def v_induced_by_finite_vortex_line(P, A, B, gamma=1):
     cos_1 = np.vdot(-i_PA, i)
     cos_2 = np.vdot(-i_PB, i)
     v = sign * (gamma/(4 * np.pi * h)) * (cos_1 - cos_2)
+
     return v

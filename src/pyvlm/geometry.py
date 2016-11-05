@@ -14,11 +14,13 @@ def norm_dir_vect(A, B):
     -------
     a : array_like
     """
+
     if (A == B).all():
         msg = "Can't calculate vector, same points"
         raise ValueError(msg)
 
     a = (B - A) / np.linalg.norm(B - A)
+
     return a
 
 
@@ -36,6 +38,7 @@ def vect_perpendicular(a):
     -------
     b : array_like
     """
+
     if (a == np.zeros_like(a)).all():
         msg = "Can't calculate, null vector"
         raise ValueError(msg)
@@ -43,6 +46,7 @@ def vect_perpendicular(a):
     b = np.empty_like(a)
     b[0] = a[1]
     b[1] = - a[0]
+
     return b
 
 
@@ -61,6 +65,7 @@ def dist_point2line(P, A, B):
     -------
     d : float
     """
+
     a = (B - A) / np.linalg.norm(B - A)
     b = vect_perpendicular(a)
 
@@ -68,12 +73,12 @@ def dist_point2line(P, A, B):
         d = 0
     else:
         d = abs(np.vdot((B - P), b))
+
     return d
 
 
 def area_4points(A, B, C, D):
     """
-
   y	^   C +-+ D     Area of the polygon defined by 4 points,
     |    /   \		previously ordered in a clockwise
     | B +-----+ A   (or counterclockwise) manner in a 2D
@@ -89,6 +94,7 @@ def area_4points(A, B, C, D):
     -------
     S : float
     """
+
     AB = B - A
     AC = C - A
     AD = D - A
@@ -100,4 +106,5 @@ def area_4points(A, B, C, D):
     S = np.cross(A, B) + np.cross(B, C) + np.cross(C, D) + np.cross(D, A)
 
     S *= 1/2
+
     return abs(S)
