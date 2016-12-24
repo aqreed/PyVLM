@@ -1,21 +1,23 @@
 import numpy as np
 
+from .panel import Panel
+
 
 class Mesh(object):
     """
-   Pi +......> y     Given a trapezoid defined by vertices Pi
-      | \            and Pf and chords 1 and 2 representing a
-      |  \           wing segment that complies with VLM theory,
-      |   + Pf       returns the points and panels of the mesh.
-chord1|   |          along with the chordwise position of each
-      |   |          panel.
-      |   |chord2    Points are presented as a list Np rows,
-      +---+          being Np the sum of points of the mesh.
-      |              Panels are given as a list of NP rows
-     x               of 4 points, where NP is the sum of
-                     panels of the mesh. The corner points
-    x - chordwise    of each panel are arranged in a clockwise
-        direction    fashion following this order:
+   Pi +......> y     Given a trapezoid defined by vertices Pi and
+      | \            Pf and chords 1 and 2 representing a wing
+      |  \           segment that complies with VLM theory, returns
+      |   + Pf       the points and panels of the mesh along with
+chord1|   |          the chordwise position of each panel.
+      |   |
+      |   |chord2    Points are presented as a list Np rows, being
+      +---+          Np the sum of points of the mesh. Panels are
+      |              given as a list of NP rows of 4 points, where
+     x               NP is the sum of panels of the mesh.
+                     The corner points of each panel are arranged
+    x - chordwise    in a clockwise fashion following this order:
+        direction
     y - spanwise
         direction            P2 +---+ P3...> y
                                 |   |
@@ -25,7 +27,7 @@ chord1|   |          along with the chordwise position of each
     ----------
     leading_edges : list (containing arrays)
                     Coordinates of the leading edge points as
-                    arrays in a 2D euclidean space
+                    arrays in a 2D euclidean space (x, y)
     chords : list
              Chord lenghts
     n, m : integer
@@ -51,11 +53,11 @@ chord1|   |          along with the chordwise position of each
         self.mesh_points = []
         self.mesh_panels = []
         self.panel_pos_chordwise = []
+        self.panel_span = []
 
     def points(self):
-        """ Yields (n+1)*(m+1) equally spaced points, span and
-            chordwise, for each geometry defined with the
-            arguments """
+        """ Yields (n+1)*(m+1) equally spaced points (x, y) coordinates,
+            for each geometry defined with the arguments """
 
         Pi = self.leading_edges[0]
         Pf = self.leading_edges[1]
@@ -75,7 +77,7 @@ chord1|   |          along with the chordwise position of each
 
         return self.mesh_points
 
-    def panel(self):
+    def panels(self):
         """ Yields n*m panels, each panel composed by 4 points
             previously calculated. The points are properly
             arranged to serve as framework for the horseshoe
@@ -101,7 +103,7 @@ chord1|   |          along with the chordwise position of each
 
         return self.mesh_panels
 
-    def panel_chord_position(self):
+    def panel_chord_positions(self):
         """ Yields the position of each panel referred to the
             local chord, which is needed to compute its
             inclination, aka corresponding camber gradient """
@@ -127,3 +129,18 @@ chord1|   |          along with the chordwise position of each
             self.panel_pos_chordwise.append(relative_pos)
 
         return self.panel_pos_chordwise
+
+    def panels_span(self):
+        """ Yields the values of the span for each one of the n*m panels """
+
+        n = self.n
+        m = self.m
+
+        N = n * m
+
+        for i in range(0, N):
+            P1, P2, P3, P4 = self.mesh_panels[i][:]
+            panel_ = Panel(P1, P2, P3, P4)
+            self.panel_span.append(panel_.span())
+
+        return self.panel_span
