@@ -24,18 +24,18 @@ B = np.array([0, -1.03])
 leading_edges_coord = [A, B]
 chord_lengths = [1.24, c]
 
-Points, Panels, Chordwise_panel_pos = pilatusPC12.add_geometry(
-                                                  leading_edges_coord,
-                                                  chord_lengths, n, m)
+Points, Panels, Panels_span, Chordwise_panel_pos = pilatusPC12.add_geometry(
+                                                   leading_edges_coord,
+                                                   chord_lengths, n, m)
 # Right wing
 C = np.array([0, 1.03])
 D = np.array([0.414, b/2])
 leading_edges_coord = [C, D]
 chord_lengths = [c, 1.24]
 
-Points, Panels, Chordwise_panel_pos = pilatusPC12.add_geometry(
-                                                  leading_edges_coord,
-                                                  chord_lengths, n, m)
+Points, Panels, Panels_span, Chordwise_panel_pos = pilatusPC12.add_geometry(
+                                                   leading_edges_coord,
+                                                   chord_lengths, n, m)
 # Horizontal stabilizer
 # A = np.array([8.284, -2.07])
 # B = np.array([7.87, 0])
@@ -49,28 +49,23 @@ Points, Panels, Chordwise_panel_pos = pilatusPC12.add_geometry(
 #                                                   chord_lengths, n, m)
 
 
-# SIMULATION #
-Y, A, X = pilatusPC12.vlm()
+# SIMULATION
+Vinf_n, matrix, gamma = pilatusPC12.vlm()
 
-
-# PRINTING AND PLOTTING #
-np.set_printoptions(precision=3)
-
-print('\n', 'Nº of points = ', len(Points))
+# PRINTING AND PLOTTING
+print('\n Point |    Coordinates ')
+print('--------------------------')
 for i in range(0, len(Points)):
-    print('Point %s =' % i, Points[i])
+    print('  %2s   |' % i, np.round(Points[i], 2))
 
-print('\n', 'Nº of Panels = ', len(Panels))
+print('\n Panel | Chrd %  |  Span  |  Vinf_n  |  Gamma |   Points coordinates')
+print('----------------------------------------------------------------------')
 for i in range(0, len(Panels)):
-    print('Panel %s' % i, Panels[i])
-
-print('\n', 'Nº of Chordwise panel position = ', len(Chordwise_panel_pos))
-for i in range(0, len(Chordwise_panel_pos)):
-    print('Panel %s' % i, Chordwise_panel_pos[i])
-
-print('\n', 'Matrix A =', '\n', A, '\n')
-print('Y =', Y, '\n')
-print('X =', X, '\n')
+    print('  %2s   |  %4.2f  | %5.4f |  %6.3f  | %5.4f | '
+          % (i, 100*Chordwise_panel_pos[i], Panels_span[i],
+          Vinf_n[i], gamma[i]), np.round(Panels[i][0], 2),
+          np.round(Panels[i][1], 2), np.round(Panels[i][2], 2),
+          np.round(Panels[i][3], 2))
 
 plt.style.use('ggplot')
 plt.xlim(-5, 15), plt.ylim(-10, 10)
