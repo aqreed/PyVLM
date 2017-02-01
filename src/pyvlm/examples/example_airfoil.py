@@ -9,7 +9,7 @@
         - NACA 4424
 
     Any other airfoil can be calculated by adding its
-    specifications to the lists below.
+    specifications to the lists M, P, T below.
 """
 
 import numpy as np
