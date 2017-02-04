@@ -1,15 +1,15 @@
 """
-    This tests aims to validate the NACA4 airfoil series
-    class by calculating the values for upper and lower
-    surfaces, camber, camber gradient and thickness for
-    the following airfoils:
+    This example shows the use of the NACA4 airfoil series
+    class by calculating and displaying the values for upper
+    and lower surfaces, camber, camber gradient and thickness
+    for the following airfoils:
 
         - NACA 0010
         - NACA 2412
         - NACA 4424
 
-    Any other airfoil can be calculated by adding its
-    specifications to the lists M, P, T below.
+    Any other airfoil of the series can be calculated by adding
+    its specifications to the lists M, P, T below.
 """
 
 import numpy as np

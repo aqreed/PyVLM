@@ -1,3 +1,26 @@
+"""
+    This example shows how to use the PyVLM class in order
+    to generate the wing planform of a Pilatus PC12 airplane.
+
+    After defining the flight conditions (airspeed and AOA),
+    the geometry will be characterised using the following
+    nomenclature:
+
+    Y  ^  D +--+
+       |   /    \
+       |  /      \
+       | /        \
+       |/          \
+     C +------------+
+       +-------------------->
+     B +------------+        X
+        \          /
+         \        /
+          \      /
+           \    /
+          A +--+
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 

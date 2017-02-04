@@ -1,21 +1,21 @@
 """
-    The purpose of this test is to check the correct behaviour
-    of the function that calculates the velocity induced by a
-                              straight line finite vortex: it
-    Y			+ P(x, y)	  must be infinite if P approaches
-     ^			|			  OX at 0 < x < 1 and zero if x < 1
-     |			|
-     +=======+--+-----> X
+    The purpose of this example is to check the behaviour of the
+    function that calculates the velocity induced by a straight
+                              line finite vortex and compare it to
+    Y			+ P(x, y)	  the predicted result showed in [1]
+     ^			|			  or [2]: as P approaches OX it must
+     |			|             go to infinite for values 0 < x < 1
+     +=======+--+-----> X     and to zero for values x < 1.
     P1(0,0)  P2(0,1)
 
-    Results can be compared to those obtained in the bibliography:
+    The cited bibliography is:
 
     [1] Cummings, R.M., Mason, W.H., Morton, S.A., McDaniel, D.R.,
         "Applied Computational Aerodynamics", Cambridge University
-        Press, 1998, Chapter 6 - 31
+        Press, 1998, Chapter 6 - 31, Figure 6-17
     [2] Gandía, F., Gonzalo, J., Margot, X., Meseguer Ruiz, J.,
         "Fundamentos de los Métodos Numéricos en Aerodinámica",
-        Garceta, 2013, pp. 100
+        Garceta, 2013, pp. 100, Figura 3.11
 """
 
 import numpy as np
