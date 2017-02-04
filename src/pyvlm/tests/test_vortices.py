@@ -40,8 +40,6 @@ def test_v_induced_by_horseshoe_vortex():
 
     assert_almost_equal(calculated_vel, expected_vel)
 
-test_v_induced_by_horseshoe_vortex()
-
 
 def test_v_induced_by_finite_vortex_line():
     P = np.array([1, 0])
