@@ -1,5 +1,5 @@
 """
-    This tests aim to validate the Vortices methods
+    Unit tests of the Vortices methods
 
 """
 
