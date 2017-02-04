@@ -69,11 +69,11 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     direction: x_Inf(+) -> A -> B -> C -> D -> x_Inf(+)
 
                 ^
-              y |                Points defining the panel
+              y |                Points defining the horseshoe
     V_inf       | i_3            are named clockwise.
     ->     C----|->--D  ...>...  A direction vector is
-    ->     |    |    |           calculated for each vortex
-    -> i_2 ^    +----|------>    of the horseshoe.
+    ->     |    |    |           calculated for each vortex.
+    -> i_2 ^    +----|------>
     ->	   |         |       x
     ->	   B----<----A  ...<...
                 i_1

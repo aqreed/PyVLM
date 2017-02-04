@@ -1,5 +1,5 @@
 """
-    This tests aims to validate the Geometry methods
+    This tests aim to validate the Geometry methods
 
 """
 
