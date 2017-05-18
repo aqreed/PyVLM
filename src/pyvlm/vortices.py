@@ -8,12 +8,12 @@ from .geometry import (norm_dir_vect,
 def vortex_position_in_panel(P1, P2, P3, P4):
     """
     For a given panel defined by points P1, P2, P3 and P4
-    returns the position of the horseshoe vortex and the
-    control	point following the Vortice Lattice Method.
+    returns the position of the horseshoe vortex defined
+    by points A, B, C and D and its control point P.
 
             ^
-          y |                Points defining the panel
-            |                are named clockwise.
+          y |                Points defining the panel are
+            |                named clockwise.
      P3--C--|--D--P4         Points defining the horseshoe
       |  |  |  |  |          are named clockwise as well.
       |  |  |  |  |
@@ -31,7 +31,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
     -------
     results : dict
         P - control point where the boundary condition V*n = 0
-            is applied
+            is applied according to the Vortice Lattice Method.
         A, B, C, D - points that define the horseshoe position
     """
 

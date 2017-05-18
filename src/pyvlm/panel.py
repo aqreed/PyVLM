@@ -8,9 +8,9 @@ from .vortices import (vortex_position_in_panel,
 class Panel(object):
     """
            y ^
-             |              The panel is defined by the (x, y) coordinates
-        P3-C-|-D-P4         of four points ordered clockwise - namely P1,
-         | | | |  |         P3, P3 and P4 -. Points defining the horseshoe
+             |              Each panel is defined by the (x, y) coordinates
+        P3-C-|-D-P4         of four points - namely P1, P2, P3 and P4 -
+         | | | |  |         ordered clockwise. Points defining the horseshoe
          | | +-P--|--->     - A, B, C and D - are named clockwise as well.
          | |   |  |   x
         P2-B---A-P1
@@ -59,8 +59,8 @@ class Panel(object):
             the control point, identified as PABCD in the documentation
             above.
 
-                *Remainder: the coordinates are returned as a list,
-                            following the order [P, A, B, C, D] """
+                *Reminder: the coordinates are returned as a list,
+                           following the order [P, A, B, C, D] """
 
         points_of_the_vortex = vortex_position_in_panel(self.P1,
                                                         self.P2,
@@ -70,7 +70,7 @@ class Panel(object):
         return points_of_the_vortex
 
     def control_point(self):
-        """ Returns the (x, y) coordinates position of the control point """
+        """ Returns the (x, y) coordinates of the control point """
 
         control_point_position = self._vortex_position()[0]
 
@@ -78,7 +78,7 @@ class Panel(object):
 
     def induced_velocity(self, control_point_pos):
         """ Calculates and returns the induced velocity by a horseshoe
-            vortex on a control point, defined as argument of the method """
+            vortex at a control point, defined as argument of the method """
 
         _points_vortex = self._vortex_position()
         v = v_induced_by_horseshoe_vortex(control_point_pos,
