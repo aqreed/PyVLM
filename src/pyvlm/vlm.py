@@ -82,9 +82,6 @@ class PyVLM(object):
             self.Panels_span.extend(Panels_span_)
             self.Chordwise_panel_positions.extend(Chordwise_panel_positions_)
 
-        return (self.Points, self.Panels_points, self.Panels_span,
-                self.Chordwise_panel_positions)
-
     def check_mesh(self):
         """ Prints the points of the mesh, the disposition of each panel
             and plots them for visual check. """
@@ -174,7 +171,6 @@ class PyVLM(object):
         gamma = np.linalg.solve(A, Vinf_n)
 
         return Vinf_n, A, gamma
-
 
 # gamma_plot = X
 # cl_plot = (2.0 * X) / (V * c)

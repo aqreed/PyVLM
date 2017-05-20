@@ -46,32 +46,24 @@ B = np.array([0, -1.03])
 leading_edges_coord = [A, B]
 chord_lengths = [1.24, c]
 
-Points, Panels, Panels_span, Chordwise_panel_pos = pilatusPC12.add_geometry(
-                                                   leading_edges_coord,
-                                                   chord_lengths, n, m)
+pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
+
 # Right wing
 C = np.array([0, 1.03])
 D = np.array([0.414, b/2])
 leading_edges_coord = [C, D]
 chord_lengths = [c, 1.24]
 
-Points, Panels, Panels_span, Chordwise_panel_pos = pilatusPC12.add_geometry(
-                                                   leading_edges_coord,
-                                                   chord_lengths, n, m)
+pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
+
 # Horizontal stabilizer
 # A = np.array([8.284, -2.07])
 # B = np.array([7.87, 0])
 # C = np.array([8.284, 2.07])
-
 # leading_edges_coord = [A, B, C]
 # chord_lengths = [0.911, 1.33, 0.911]
-
-# Points, Panels, Chordwise_panel_pos = pilatusPC12.add_geometry(
-#                                                   leading_edges_coord,
-#                                                   chord_lengths, n, m)
 
 pilatusPC12.check_mesh()
 
 # SIMULATION
 Vinf_n, matrix, gamma = pilatusPC12.vlm()
-
