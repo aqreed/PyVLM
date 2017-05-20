@@ -170,6 +170,11 @@ class PyVLM(object):
 
         gamma = np.linalg.solve(A, Vinf_n)
 
+        print('\n Panel |  Vinf_n  |  Gamma |')
+        print('----------------------------')
+        for i in range(0, len(Panels_points)):
+            print('  %2s   |  %6.3f  | %5.4f | ' % (i, Vinf_n[i], gamma[i]))
+
         return Vinf_n, A, gamma
 
 # gamma_plot = X
