@@ -8,9 +8,9 @@ from .airfoils import NACA4
 
 class PyVLM(object):
     """
-    Given the geometry, angle of attack, upstream velocity and
-    mesh chordwise and spanwise densities, applies the VLM theory
-    to the surface.
+    Given a geometry, angle of attack, upstream velocity and mesh
+    chordwise and spanwise densities, applies the VLM theory to
+    the defined lifting surface.
 
     Parameters
     ----------
@@ -40,11 +40,10 @@ class PyVLM(object):
 
     def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
         """ Allows to add wings, stabilizers, canard wings or any
-            other lifting surface to the mesh, defined by given
-            chords. These are defined by their leading edges
-            locations and their lengths. Also the density of the
-            mesh can be controlled spanwise and chordwise with
-            n and m """
+            other lifting surface to the mesh. These are defined
+            by their chords' lengths and leading edges locations.
+            The spanwise and chordwise density of the mesh can be
+            controlled through n and m. """
 
         if len(lead_edge_coord) != len(chord_lengths):
             msg = 'Same number of chords and leading edges required'
@@ -86,6 +85,36 @@ class PyVLM(object):
         return (self.Points, self.Panels_points, self.Panels_span,
                 self.Chordwise_panel_positions)
 
+    def check_mesh(self):
+        """ Prints the points of the mesh, the disposition of each panel
+            and plots them for visual check. """
+
+        Points = self.Points
+        Panels = self.Panels_points
+        Panels_span = self.Panels_span
+        Chordwise_panel_pos = self.Chordwise_panel_positions
+
+        # PRINTING AND PLOTTING
+        # print('\n Point |    Coordinates ')
+        # print('------------------------')
+        # for i in range(0, len(Points)):
+        #     print('  %2s   |' % i, np.round(Points[i], 2))
+
+        print('\n Panel | Chrd %  |  Span  |  Points coordinates')
+        print('------------------------------------------------')
+        for i in range(0, len(Panels)):
+            print('  %2s   |  %4.2f  | %5.4f | '
+                  % (i, 100*Chordwise_panel_pos[i], Panels_span[i]),
+                  np.round(Panels[i][0], 2), np.round(Panels[i][1], 2),
+                  np.round(Panels[i][2], 2), np.round(Panels[i][3], 2))
+
+        plt.style.use('ggplot')
+        plt.xlim(-5, 15), plt.ylim(-10, 10)
+        for i in range(0, len(Points)):
+            P = Points[i]
+            plt.plot(P[0], P[1], 'ro')
+        plt.show()
+
     def vlm(self):
         """ For a given set of panels (defined by its 4 points) and
             their chordwise position (referred to the local chord),
@@ -93,7 +122,7 @@ class PyVLM(object):
             produced by all the associated horseshoe vortices on each
             panel, calculated on its control point where the boundary
             condition will be imposed. Computes the circulation by
-            solving the linear equation """
+            solving the linear equation. """
 
         Panels_points = self.Panels_points
         Chordwise_panel_positions = self.Chordwise_panel_positions
