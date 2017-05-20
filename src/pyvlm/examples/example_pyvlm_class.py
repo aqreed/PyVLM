@@ -33,7 +33,6 @@ alpha = np.deg2rad(3)
 
 pilatusPC12 = PyVLM(V, alpha)
 
-
 # GEOMETRY DEFINITION #
 # Parameters
 c = 2.15  # root chord length
@@ -71,28 +70,8 @@ Points, Panels, Panels_span, Chordwise_panel_pos = pilatusPC12.add_geometry(
 #                                                   leading_edges_coord,
 #                                                   chord_lengths, n, m)
 
+pilatusPC12.check_mesh()
 
 # SIMULATION
 Vinf_n, matrix, gamma = pilatusPC12.vlm()
 
-# PRINTING AND PLOTTING
-print('\n Point |    Coordinates ')
-print('--------------------------')
-for i in range(0, len(Points)):
-    print('  %2s   |' % i, np.round(Points[i], 2))
-
-print('\n Panel | Chrd %  |  Span  |  Vinf_n  |  Gamma |   Points coordinates')
-print('----------------------------------------------------------------------')
-for i in range(0, len(Panels)):
-    print('  %2s   |  %4.2f  | %5.4f |  %6.3f  | %5.4f | '
-          % (i, 100*Chordwise_panel_pos[i], Panels_span[i],
-          Vinf_n[i], gamma[i]), np.round(Panels[i][0], 2),
-          np.round(Panels[i][1], 2), np.round(Panels[i][2], 2),
-          np.round(Panels[i][3], 2))
-
-plt.style.use('ggplot')
-plt.xlim(-5, 15), plt.ylim(-10, 10)
-for i in range(0, len(Points)):
-    P = Points[i]
-    plt.plot(P[0], P[1], 'ro')
-plt.show()
