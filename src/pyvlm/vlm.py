@@ -129,15 +129,20 @@ class PyVLM(object):
 
         # 1. BOUNDARY CONDITION
         # To impose the boundary condition we have to calculate
-        # the normal components of (a) induced velocities Wn and
-        # (b) upstream velocity Vn_inf
+        # the normal components of (a) induced velocities Wn and Wi
+        # and (b) upstream velocity Vn_inf
 
         #     1.a INDUCED VELOCITIES
-        #     stored in the matrix "A" where the element Aij is
-        #     the velocity induced by the panel j on the panel i
+        #     - Wn stored in the matrix "A" where the element Aij is
+        #       the velocity induced by the panel j on the panel i
+        #     - Wi stored in the array "B", where the element Bi is
+        #       the velocity induced by all the trailing vortices on
+        #       the panel i
 
         N = len(Panels_points)
         A = np.zeros(shape=(N, N))
+        B = np.zeros(N)
+        testt = np.zeros(N)
 
         for i in range(0, N):
             P1, P2, P3, P4 = Panels_points[i][:]
@@ -145,11 +150,15 @@ class PyVLM(object):
             s = panel_pivot.area()
             CP = panel_pivot.control_point()
 
+            Wi = 0
             for j in range(0, N):
                 PP1, PP2, PP3, PP4 = Panels_points[j][:]
                 panel = Panel(PP1, PP2, PP3, PP4)
-                Wn = panel.induced_velocity(CP)
+                Wn = panel.total_induced_velocity(CP)
+                Wi += panel.trailing_vortices_induced_velocity(CP)
                 A[i, j] = Wn
+
+            B[i] = Wi
 
         #     1.b UPSTREAM VELOCITIES
         #     that will depend on the angle of attach -"alpha"-
@@ -170,12 +179,13 @@ class PyVLM(object):
 
         gamma = np.linalg.solve(A, Vinf_n)
 
-        print('\n Panel |  Vinf_n  |  Gamma |')
-        print('----------------------------')
+        print('\n Panel |  Vinf_n  |  Gamma |    Wi   |')
+        print('--------------------------------------')
         for i in range(0, len(Panels_points)):
-            print('  %2s   |  %6.3f  | %5.4f | ' % (i, Vinf_n[i], gamma[i]))
+            print('  %2s   |  %6.3f  | %6.3f | %5.4f |'
+                  % (i, Vinf_n[i], gamma[i], B[i]))
 
-        return Vinf_n, A, gamma
+        return Vinf_n, A, B, gamma
 
 # gamma_plot = X
 # cl_plot = (2.0 * X) / (V * c)
