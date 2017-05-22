@@ -28,7 +28,7 @@ from pyvlm.vlm import PyVLM
 
 
 # FLIGHT CONDITION PARAMETERS #
-V = 20.0
+V = 140.0
 alpha = np.deg2rad(0)
 
 pilatusPC12 = PyVLM(V, alpha)
@@ -37,8 +37,8 @@ pilatusPC12 = PyVLM(V, alpha)
 # Parameters
 c = 2.15  # root chord length
 b = 16.28  # panel span length
-n = 32  # number of panels chordwise
-m = 1  # number of panels spanwise
+n = 3  # number of panels chordwise
+m = 2  # number of panels spanwise
 
 # Left wing
 A = np.array([.414, -b/2])
@@ -49,12 +49,12 @@ chord_lengths = [1.24, c]
 pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
 
 # Right wing
-# C = np.array([0, 1.03])
-# D = np.array([0.414, b/2])
-# leading_edges_coord = [C, D]
-# chord_lengths = [c, 1.24]
+C = np.array([0, 1.03])
+D = np.array([0.414, b/2])
+leading_edges_coord = [C, D]
+chord_lengths = [c, 1.24]
 
-# pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
+pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
 
 # Horizontal stabilizer
 # A = np.array([8.284, -2.07])
@@ -63,7 +63,7 @@ pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
 # leading_edges_coord = [A, B, C]
 # chord_lengths = [0.911, 1.33, 0.911]
 
-pilatusPC12.check_mesh()
+# pilatusPC12.check_mesh()
 
 # SIMULATION
-Vinf_n, matrix, array, gamma = pilatusPC12.vlm()
+pilatusPC12.vlm()

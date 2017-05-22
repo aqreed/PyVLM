@@ -38,12 +38,15 @@ class PyVLM(object):
         self.Panels_span = []
         self.Chordwise_panel_positions = []
 
+        self.rho = 1.225
+
     def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
-        """ Allows to add wings, stabilizers, canard wings or any
-            other lifting surface to the mesh. These are defined
-            by their chords' lengths and leading edges locations.
-            The spanwise and chordwise density of the mesh can be
-            controlled through n and m. """
+        """
+        Allows to add wings, stabilizers, canard wings or any other
+        lifting surface to the mesh. These are defined by their chords'
+        lengths and leading edges locations. The spanwise and chordwise
+        density of the mesh can be controlled through n and m.
+        """
 
         if len(lead_edge_coord) != len(chord_lengths):
             msg = 'Same number of chords and leading edges required'
@@ -83,8 +86,10 @@ class PyVLM(object):
             self.Chordwise_panel_positions.extend(Chordwise_panel_positions_)
 
     def check_mesh(self):
-        """ Prints the points of the mesh, the disposition of each panel
-            and plots them for visual check. """
+        """
+        Prints the points of the mesh, the disposition of each panel and
+        plots them for visual check.
+        """
 
         Points = self.Points
         Panels = self.Panels_points
@@ -113,36 +118,47 @@ class PyVLM(object):
         plt.show()
 
     def vlm(self):
-        """ For a given set of panels (defined by its 4 points) and
-            their chordwise position (referred to the local chord),
-            both presented as lists, computes the induced velocity
-            produced by all the associated horseshoe vortices on each
-            panel, calculated on its control point where the boundary
-            condition will be imposed. Computes the circulation by
-            solving the linear equation. """
+        """
+        For a given set of panels (defined by its 4 points) and their
+        chordwise position (referred to the local chord), both presented
+        as lists, applies the VLM theory:
+
+            - Calculates the induced velocity produced by all the
+              associated horseshoe vortices of strength=1 on each panel,
+              calculated on its control point where the boundary condition
+              will be imposed.
+            - Computes the circulation by solving the linear equation.
+
+        Then it produces the forces acting on each panel.
+        """
 
         Panels_points = self.Panels_points
         Chordwise_panel_positions = self.Chordwise_panel_positions
+        Panels_span = self.Panels_span
 
         V = self.V
         alpha = self.alpha
+        rho = self.rho
 
         # 1. BOUNDARY CONDITION
-        # To impose the boundary condition we have to calculate
-        # the normal components of (a) induced velocities Wn and Wi
-        # and (b) upstream velocity Vn_inf
+        # To impose the boundary condition we must calculate the normal
+        # components of (a) induced velocity "Wn" by horshoe vortices of
+        # strength=1 and (b) upstream normal velocity "Vinf_n"
 
         #     1.a INDUCED VELOCITIES
-        #     - Wn stored in the matrix "A" where the element Aij is
-        #       the velocity induced by the panel j on the panel i
-        #     - Wi stored in the array "B", where the element Bi is
-        #       the velocity induced by all the trailing vortices on
-        #       the panel i
+        #     - "Wn", normal component of the total induced velocity by the
+        #       horshoe vortices, stored in the matrix "A" where the element
+        #       Aij is the velocity induced by the horshoe vortex in panel j
+        #       on the control point of panel i
+        #     - also the induced velocity by *only* trailing vortices "Wi" is
+        #       calculated and stored in the array "W_induced", where the
+        #       element Winduced[i] is the velocity induced by all the trailing
+        #       vortices on the panel i
 
         N = len(Panels_points)
         A = np.zeros(shape=(N, N))
-        B = np.zeros(N)
-        testt = np.zeros(N)
+        W_induced = np.zeros(N)  # induced velocity by trailing vortices
+        alpha_induced = np.zeros(N)  # induces angle of attack
 
         for i in range(0, N):
             P1, P2, P3, P4 = Panels_points[i][:]
@@ -150,20 +166,21 @@ class PyVLM(object):
             s = panel_pivot.area()
             CP = panel_pivot.control_point()
 
-            Wi = 0
+            Wi_ = 0
             for j in range(0, N):
                 PP1, PP2, PP3, PP4 = Panels_points[j][:]
                 panel = Panel(PP1, PP2, PP3, PP4)
                 Wn = panel.total_induced_velocity(CP)
-                Wi += panel.trailing_vortices_induced_velocity(CP)
+                Wi_ += panel.trailing_vortices_induced_velocity(CP)
                 A[i, j] = Wn
 
-            B[i] = Wi
+            W_induced[i] = Wi_
+            alpha_induced[i] = np.arctan(abs(W_induced[i])/V)  # rad
 
-        #     1.b UPSTREAM VELOCITIES
-        #     that will depend on the angle of attach -"alpha"-
-        #     and the camber gradient at each panel's position
-        #     within the local chord
+        #     1.b UPSTREAM NORMAL VELOCITY
+        #     that will depend on the angle of attach -"alpha"- and the
+        #     camber gradient at each panel's position within the local
+        #     chord
 
         Vinf_n = np.zeros(shape=N)
 
@@ -171,23 +188,29 @@ class PyVLM(object):
         for i in range(0, N):
             position = Chordwise_panel_positions[i]
             Vinf_n[i] = alpha - airfoil.camber_gradient(position)
-            Vinf_n[i] *= -self.V
+            Vinf_n[i] *= -V
 
         # 2. CIRCULATION (gamma)
         # by solving the linear equation (AX = Y) where X = gamma
-        # and Y = V_inf
+        # and Y = Vinf_n
 
         gamma = np.linalg.solve(A, Vinf_n)
 
-        print('\n Panel |  Vinf_n  |  Gamma |    Wi   |')
-        print('--------------------------------------')
+        l = np.zeros(N)
+        d = np.zeros(N)
+        for i in range(0, N):
+            l[i] = V * rho * gamma[i] * Panels_span[i]
+            d[i] = rho * abs(gamma[i]) * Panels_span[i] * abs(W_induced[i])
+
+        L = sum(l)
+        D = sum(d)
+
+        print('\n Panel | Vinf_n | Gamma |   Wi   |alpha_i|    l   |   d  |')
+        print('----------------------------------------------------------')
         for i in range(0, len(Panels_points)):
-            print('  %2s   |  %6.3f  | %6.3f | %5.4f |'
-                  % (i, Vinf_n[i], gamma[i], B[i]))
+            print('  %2s   |  %5.2f | %5.2f | %6.3f | %5.3f |%7.1f | %4.2f |'
+                  % (i, Vinf_n[i], gamma[i], W_induced[i],
+                     np.rad2deg(alpha_induced[i]), l[i], d[i]))
+        print('\n L = %6.3f     D = %6.3f ' % (L, D))
 
-        return Vinf_n, A, B, gamma
-
-# gamma_plot = X
-# cl_plot = (2.0 * X) / (V * c)
-# cd_plot = (-2.0 * abs(X) * w * b) / (V**2 * S)
-# cm_plot = - cl_plot[i] * (0.25 * c) / c
+        return L, D
