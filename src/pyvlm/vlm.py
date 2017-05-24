@@ -170,9 +170,9 @@ class PyVLM(object):
             for j in range(0, N):
                 PP1, PP2, PP3, PP4 = Panels_points[j][:]
                 panel = Panel(PP1, PP2, PP3, PP4)
-                Wn = panel.total_induced_velocity(CP)
-                Wi_ += panel.trailing_vortices_induced_velocity(CP)
+                Wn, Wi = panel.induced_velocity(CP)
                 A[i, j] = Wn
+                Wi_ += Wi
 
             W_induced[i] = Wi_
             alpha_induced[i] = np.arctan(abs(W_induced[i])/V)  # rad

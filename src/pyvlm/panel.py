@@ -76,9 +76,10 @@ class Panel(object):
 
         return control_point_position
 
-    def total_induced_velocity(self, control_point_pos):
-        """ Returns the induced velocity by a horseshoe vortex at
-            a control point, defined as argument of the method """
+    def induced_velocity(self, control_point_pos):
+        """ Returns the induced velocity by a horseshoe vortex and the
+            induced velocity excluding the bounded segment at a control
+            point, defined as argument of the method """
 
         _points_vortex = self._vortex_position()
         v = v_induced_by_horseshoe_vortex(control_point_pos,
@@ -87,18 +88,4 @@ class Panel(object):
                                           _points_vortex[3],
                                           _points_vortex[4])
 
-        return v[0]
-
-    def trailing_vortices_induced_velocity(self, control_point_pos):
-        """ Returns the induced velocity by a horseshoe vortex - excluding
-            the bounded segment - at a control point, defined as argument
-            of the method """
-
-        _points_vortex = self._vortex_position()
-        v = v_induced_by_horseshoe_vortex(control_point_pos,
-                                          _points_vortex[1],
-                                          _points_vortex[2],
-                                          _points_vortex[3],
-                                          _points_vortex[4])
-
-        return v[1]
+        return v[0], v[1]

@@ -37,8 +37,8 @@ pilatusPC12 = PyVLM(V, alpha)
 # Parameters
 c = 2.15  # root chord length
 b = 16.28  # panel span length
-n = 3  # number of panels chordwise
-m = 2  # number of panels spanwise
+n = 8  # number of panels chordwise
+m = 6  # number of panels spanwise
 
 # Left wing
 A = np.array([.414, -b/2])
