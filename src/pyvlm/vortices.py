@@ -5,6 +5,20 @@ from .geometry import (norm_dir_vect,
                        dist_point2line)
 
 
+def cross_prod(a, b):
+
+    x = a[0]*b[1] - a[1]*b[0]
+
+    return x
+
+
+def vect_dot(a, b):
+
+    x = a[0]*b[0] + a[1]*b[1]
+
+    return x
+
+
 def vortex_position_in_panel(P1, P2, P3, P4):
     """
     For a given panel defined by points P1, P2, P3 and P4
@@ -40,11 +54,11 @@ def vortex_position_in_panel(P1, P2, P3, P4):
     P3P4 = P4 - P3
     P1P4 = P4 - P1
 
-    if np.cross(P1P2, i_inf) != 0:
+    if cross_prod(P1P2, i_inf) != 0:
         msg = 'P1P2 segment not aligned with OX'
         raise ValueError(msg)
 
-    if np.cross(P3P4, i_inf) != 0:
+    if cross_prod(P3P4, i_inf) != 0:
         msg = 'P3P4 segment not aligned with OX'
         raise ValueError(msg)
 
@@ -95,15 +109,15 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     i_2 = norm_dir_vect(B, C)  # bound vortex(2) dir. vector
     i_3 = norm_dir_vect(C, D)  # trailing vortex(3) dir. vector
 
-    if np.cross(i_1, i_inf) != 0:
+    if cross_prod(i_1, i_inf) != 0:
         msg = '1st trailing vortex segment not aligned with OX'
         raise ValueError(msg)
 
-    if np.cross(i_2, i_inf) == 0:
+    if cross_prod(i_2, i_inf) == 0:
         msg = 'Bound vortex segment aligned with OX'
         raise ValueError(msg)
 
-    if np.cross(i_3, i_inf) != 0:
+    if cross_prod(i_3, i_inf) != 0:
         msg = '2nd trailing vortex segment not aligned with OX'
         raise ValueError(msg)
 
@@ -113,8 +127,8 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     if h_1 == 0:
         v_1 = 0
     else:
-        sign_1 = np.sign(np.cross(i_PB, i_1))
-        cos_2 = np.vdot(-i_PB, i_1)
+        sign_1 = np.sign(cross_prod(i_PB, i_1))
+        cos_2 = vect_dot(-i_PB, i_1)
         v_1 = sign_1 * (gamma/(4 * np.pi * h_1)) * (1 - cos_2)
 
     # Bound vortex segment B -> C
@@ -123,9 +137,9 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     if h_2 == 0:
         v_2 = 0
     else:
-        sign_2 = np.sign(np.cross(i_PC, i_2))
-        cos_1 = np.vdot(-i_PB, i_2)
-        cos_2 = np.vdot(-i_PC, i_2)
+        sign_2 = np.sign(cross_prod(i_PC, i_2))
+        cos_1 = vect_dot(-i_PB, i_2)
+        cos_2 = vect_dot(-i_PC, i_2)
         v_2 = sign_2 * (gamma/(4 * np.pi * h_2)) * (cos_1 - cos_2)
 
     # Second trailing vortex segment C -> D -> x_Inf(+)
@@ -133,12 +147,13 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     if h_3 == 0:
         v_3 = 0
     else:
-        sign_3 = np.sign(np.cross(i_PC, i_3))
-        cos_1 = np.vdot(-i_PC, i_3)
+        sign_3 = np.sign(cross_prod(i_PC, i_3))
+        cos_1 = vect_dot(-i_PC, i_3)
         v_3 = sign_3 * (gamma/(4 * np.pi * h_3)) * (cos_1 + 1)
 
     v1 = v_1 + v_2 + v_3  # Total induced velocity in P
     v2 = v_1 + v_3  # Induced velocity in P due to trailing vortices
+
     return v1, v2
 
 
@@ -169,10 +184,10 @@ def v_induced_by_finite_vortex_line(P, A, B, gamma=1):
     i_PB = norm_dir_vect(P, B)  # PC direction vector
 
     h = dist_point2line(P, A, B)  # distance to vortex_2
-    sign = np.sign(np.cross(i_PA, i))
+    sign = np.sign(cross_prod(i_PA, i))
 
-    cos_1 = np.vdot(-i_PA, i)
-    cos_2 = np.vdot(-i_PB, i)
+    cos_1 = vect_dot(-i_PA, i)
+    cos_2 = vect_dot(-i_PB, i)
     v = sign * (gamma/(4 * np.pi * h)) * (cos_1 - cos_2)
 
     return v
