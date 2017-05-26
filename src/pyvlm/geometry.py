@@ -80,13 +80,16 @@ def dist_point2line(P, A, B):
     d : float
     """
 
-    a = (B - A) / np.linalg.norm(B - A)
+    AB = B - A
+    PB = B - P
+
+    a = AB / np.linalg.norm(AB)
     b = vect_perpendicular(a)
 
-    if cross_prod((B - P), a) == 0:
+    if cross_prod((PB), a) == 0:
         d = 0
     else:
-        d = abs(vect_dot((B - P), b))
+        d = abs(vect_dot((PB), b))
 
     return d
 
