@@ -1,22 +1,7 @@
 import numpy as np
 
-from .geometry import (norm_dir_vect,
-                       vect_perpendicular,
-                       dist_point2line)
-
-
-def cross_prod(a, b):
-
-    x = a[0]*b[1] - a[1]*b[0]
-
-    return x
-
-
-def vect_dot(a, b):
-
-    x = a[0]*b[0] + a[1]*b[1]
-
-    return x
+from .geometry import (cross_prod, vect_dot, norm_dir_vect,
+                       vect_perpendicular, dist_point2line)
 
 
 def vortex_position_in_panel(P1, P2, P3, P4):
