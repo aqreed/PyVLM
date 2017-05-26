@@ -132,9 +132,9 @@ class PyVLM(object):
         Then it produces the forces acting on each panel.
         """
 
-        Panels_points = self.Panels_points
-        Chordwise_panel_positions = self.Chordwise_panel_positions
+        Panels = self.Panels_points
         Panels_span = self.Panels_span
+        Panels_chordwise_position = self.Chordwise_panel_positions
 
         V = self.V
         alpha = self.alpha
@@ -155,20 +155,20 @@ class PyVLM(object):
         #       element Winduced[i] is the velocity induced by all the trailing
         #       vortices on the panel i
 
-        N = len(Panels_points)
+        N = len(Panels)
         A = np.zeros(shape=(N, N))
         W_induced = np.zeros(N)  # induced velocity by trailing vortices
         alpha_induced = np.zeros(N)  # induces angle of attack
 
         for i in range(0, N):
-            P1, P2, P3, P4 = Panels_points[i][:]
+            P1, P2, P3, P4 = Panels[i][:]
             panel_pivot = Panel(P1, P2, P3, P4)
             s = panel_pivot.area()
             CP = panel_pivot.control_point()
 
             Wi_ = 0
             for j in range(0, N):
-                PP1, PP2, PP3, PP4 = Panels_points[j][:]
+                PP1, PP2, PP3, PP4 = Panels[j][:]
                 panel = Panel(PP1, PP2, PP3, PP4)
                 Wn, Wi = panel.induced_velocity(CP)
                 A[i, j] = Wn
@@ -186,7 +186,7 @@ class PyVLM(object):
 
         airfoil = NACA4()
         for i in range(0, N):
-            position = Chordwise_panel_positions[i]
+            position = Panels_chordwise_position[i]
             Vinf_n[i] = alpha - airfoil.camber_gradient(position)
             Vinf_n[i] *= -V
 
@@ -207,7 +207,7 @@ class PyVLM(object):
 
         print('\n Panel | Vinf_n | Gamma |   Wi   |alpha_i|    l   |   d  |')
         print('----------------------------------------------------------')
-        for i in range(0, len(Panels_points)):
+        for i in range(0, len(Panels)):
             print('  %2s   |  %5.2f | %5.2f | %6.3f | %5.3f |%7.1f | %4.2f |'
                   % (i, Vinf_n[i], gamma[i], W_induced[i],
                      np.rad2deg(alpha_induced[i]), l[i], d[i]))
