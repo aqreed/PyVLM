@@ -90,9 +90,9 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     """
 
     i_inf = np.array([1, 0])  # x_Inf(+) direction vector
-    i_1 = norm_dir_vect(A, B)  # trailing vortex(1) dir. vector
+    i_1 = np.array([-1, 0])  # trailing vortex(1) dir. vector
     i_2 = norm_dir_vect(B, C)  # bound vortex(2) dir. vector
-    i_3 = norm_dir_vect(C, D)  # trailing vortex(3) dir. vector
+    i_3 = i_inf  # trailing vortex(3) dir. vector
 
     if cross_prod(i_1, i_inf) != 0:
         msg = '1st trailing vortex segment not aligned with OX'
