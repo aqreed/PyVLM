@@ -1,6 +1,20 @@
 import numpy as np
 
 
+def cross_prod(a, b):
+
+    x = a[0]*b[1] - a[1]*b[0]
+
+    return x
+
+
+def vect_dot(a, b):
+
+    x = a[0]*b[0] + a[1]*b[1]
+
+    return x
+
+
 def norm_dir_vect(A, B):
     """
     Normalized direction vector from point A to point B
@@ -69,10 +83,10 @@ def dist_point2line(P, A, B):
     a = (B - A) / np.linalg.norm(B - A)
     b = vect_perpendicular(a)
 
-    if np.cross((B - P), a) == 0:
+    if cross_prod((B - P), a) == 0:
         d = 0
     else:
-        d = abs(np.vdot((B - P), b))
+        d = abs(vect_dot((B - P), b))
 
     return d
 
@@ -99,11 +113,12 @@ def area_4points(A, B, C, D):
     AC = C - A
     AD = D - A
 
-    if np.sign(np.cross(AB, AC)) != np.sign(np.cross(AC, AD)):
+    if np.sign(cross_prod(AB, AC)) != np.sign(cross_prod(AC, AD)):
         msg = 'Points not in a clockwise/counterclockwise fashion'
         raise ValueError(msg)
 
-    S = np.cross(A, B) + np.cross(B, C) + np.cross(C, D) + np.cross(D, A)
+    S = cross_prod(A, B) + cross_prod(B, C) + \
+        cross_prod(C, D) + cross_prod(D, A)
 
     S *= 1/2
 
