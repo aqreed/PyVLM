@@ -89,6 +89,8 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     v : float
     """
 
+    pi = np.pi
+
     i_inf = np.array([1, 0])  # x_Inf(+) direction vector
     i_1 = np.array([-1, 0])  # trailing vortex(1) dir. vector
     i_2 = norm_dir_vect(B, C)  # bound vortex(2) dir. vector
@@ -114,7 +116,7 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     else:
         sign_1 = np.sign(cross_prod(i_PB, i_1))
         cos_2 = vect_dot(-i_PB, i_1)
-        v_1 = sign_1 * (gamma/(4 * np.pi * h_1)) * (1 - cos_2)
+        v_1 = sign_1 * (gamma/(4 * pi * h_1)) * (1 - cos_2)
 
     # Bound vortex segment B -> C
     i_PC = norm_dir_vect(P, C)  # PC direction vector
@@ -125,7 +127,7 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
         sign_2 = np.sign(cross_prod(i_PC, i_2))
         cos_1 = vect_dot(-i_PB, i_2)
         cos_2 = vect_dot(-i_PC, i_2)
-        v_2 = sign_2 * (gamma/(4 * np.pi * h_2)) * (cos_1 - cos_2)
+        v_2 = sign_2 * (gamma/(4 * pi * h_2)) * (cos_1 - cos_2)
 
     # Second trailing vortex segment C -> D -> x_Inf(+)
     h_3 = dist_point2line(P, C, D)  # distance to 2nd tr. vortex
@@ -134,7 +136,7 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     else:
         sign_3 = np.sign(cross_prod(i_PC, i_3))
         cos_1 = vect_dot(-i_PC, i_3)
-        v_3 = sign_3 * (gamma/(4 * np.pi * h_3)) * (cos_1 + 1)
+        v_3 = sign_3 * (gamma/(4 * pi * h_3)) * (cos_1 + 1)
 
     v1 = v_1 + v_2 + v_3  # Total induced velocity in P
     v2 = v_1 + v_3  # Induced velocity in P due to trailing vortices
@@ -173,6 +175,6 @@ def v_induced_by_finite_vortex_line(P, A, B, gamma=1):
 
     cos_1 = vect_dot(-i_PA, i)
     cos_2 = vect_dot(-i_PB, i)
-    v = sign * (gamma/(4 * np.pi * h)) * (cos_1 - cos_2)
+    v = sign * (gamma/(4 * pi * h)) * (cos_1 - cos_2)
 
     return v
