@@ -94,7 +94,42 @@ class PyVLM(object):
         Points = self.Points
         Panels = self.Panels_points
         Panels_span = self.Panels_span
-        Chordwise_panel_pos = self.Chordwise_panel_positions
+        Panels_chordwise_pos = self.Chordwise_panel_positions
+
+        # Check for coincident points
+        N = len(Points)
+        for i in range(0, N):
+            count = 0
+            for j in range(0, N):
+                if(((Points[j] == Points[i]).all()) is True):
+                    count += 1
+                    if(count > 1):
+                        msg = "Two points of the mesh coincide"
+                        raise ValueError(msg)
+
+        # Check for incorrectly defined panels
+        N = len(Panels)
+        for i in range(0, N):
+            P1, P2, P3, P4 = Panels[i][:]
+
+            P1P2 = P2 - P1
+            P1P3 = P3 - P1
+            P1P4 = P4 - P1
+            P3P4 = P4 - P3
+
+            i_inf = np.array([1, 0])
+
+            if np.cross(P1P2, i_inf) != 0:
+                msg = 'P1P2 segment not aligned with OX'
+                raise ValueError(msg)
+
+            if np.cross(P1P2, P3P4) != 0:
+                msg = 'Panel incorrectly defined, P1P2 and P3P4 not parallel'
+                raise ValueError(msg)
+
+            if np.sign(np.cross(P1P2, P1P3)) != np.sign(np.cross(P1P3, P1P4)):
+                msg = 'Points not in a clockwise/counterclockwise fashion'
+                raise ValueError(msg)
 
         # PRINTING AND PLOTTING
         # print('\n Point |    Coordinates ')
@@ -106,7 +141,7 @@ class PyVLM(object):
         print('------------------------------------------------')
         for i in range(0, len(Panels)):
             print('  %2s   |  %4.2f  | %5.4f | '
-                  % (i, 100*Chordwise_panel_pos[i], Panels_span[i]),
+                  % (i, 100*Panels_chordwise_pos[i], Panels_span[i]),
                   np.round(Panels[i][0], 2), np.round(Panels[i][1], 2),
                   np.round(Panels[i][2], 2), np.round(Panels[i][3], 2))
 

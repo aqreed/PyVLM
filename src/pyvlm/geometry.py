@@ -29,10 +29,6 @@ def norm_dir_vect(A, B):
     a : array_like
     """
 
-    if (A == B).all():
-        msg = "Can't calculate vector, same points"
-        raise ValueError(msg)
-
     a = (B - A) / np.linalg.norm(B - A)
 
     return a
@@ -52,10 +48,6 @@ def vect_perpendicular(a):
     -------
     b : array_like
     """
-
-    if (a == np.zeros_like(a)).all():
-        msg = "Can't calculate, null vector"
-        raise ValueError(msg)
 
     b = np.empty_like(a)
     b[0] = a[1]
@@ -111,14 +103,6 @@ def area_4points(A, B, C, D):
     -------
     S : float
     """
-
-    AB = B - A
-    AC = C - A
-    AD = D - A
-
-    if np.sign(cross_prod(AB, AC)) != np.sign(cross_prod(AC, AD)):
-        msg = 'Points not in a clockwise/counterclockwise fashion'
-        raise ValueError(msg)
 
     S = cross_prod(A, B) + cross_prod(B, C) + \
         cross_prod(C, D) + cross_prod(D, A)
