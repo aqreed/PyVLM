@@ -60,8 +60,11 @@ chord1|   |          chordwise position of each panel.
         self.panel_span = []
 
     def points(self):
-        """ Yields (n+1)*(m+1) equally spaced points (x, y) coordinates,
-            for each trapezoid geometry defined by the arguments """
+        """
+        Yields a list of size (n+1)*(m+1) containing equally spaced
+        points (x, y) coordinates, for each trapezoid geometry defined
+        by the arguments.
+        """
 
         Pi = self.leading_edges[0]
         Pf = self.leading_edges[1]
@@ -82,9 +85,11 @@ chord1|   |          chordwise position of each panel.
         return self.mesh_points
 
     def panels(self):
-        """ Yields n*m panels, each one defined by 4 points previously
-            calculated. The points are properly arranged to serve as
-            locations for the horseshoe vortices """
+        """
+        Yields a list of size (n*m) containing the panels, defined
+        by 4 points previously calculated. The points are properly
+        arranged to serve as locations for the horseshoe vortices.
+        """
 
         n = self.n
         m = self.m
@@ -107,9 +112,11 @@ chord1|   |          chordwise position of each panel.
         return self.mesh_panels
 
     def panel_chord_positions(self):
-        """ Yields the chordwise position of each panel referred to the
-            local chord, which is needed to compute its slope, aka its
-            corresponding camber gradient """
+        """
+        Yields a list of size (n*m), containing the chordwise position
+        of each panel referred to the local chord, needed to compute its
+        slope, aka its corresponding camber gradient.
+        """
 
         Pi = self.leading_edges[0]
         chord_1 = np.array([self.chords[0], 0])
@@ -134,7 +141,10 @@ chord1|   |          chordwise position of each panel.
         return self.panel_pos_chordwise
 
     def panels_span(self):
-        """ Yields the span of each one of the n*m panels """
+        """
+        Yields a list of size (n*m), containing the span of each one of
+        the panels.
+        """
 
         n = self.n
         m = self.m
