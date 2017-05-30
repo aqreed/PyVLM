@@ -117,10 +117,10 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
         cos_1 = vect_dot(-i_PC, i_3)
         v_3 = sign_3 * (gamma/(4 * pi * h_3)) * (cos_1 + 1)
 
-    v1 = v_1 + v_2 + v_3  # Total induced velocity in P
-    v2 = v_1 + v_3  # Induced velocity in P due to trailing vortices
+    v_trail = v_1 + v_3  # Induced velocity in P due to trailing vortices
+    v_total = v_trail + v_2  # Total induced velocity in P
 
-    return v1, v2
+    return v_total, v_trail
 
 
 def v_induced_by_finite_vortex_line(P, A, B, gamma=1):
