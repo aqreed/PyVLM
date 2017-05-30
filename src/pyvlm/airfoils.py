@@ -1,4 +1,4 @@
-import numpy as np
+from math import cos, sin, atan
 
 
 class NACA4(object):
@@ -42,7 +42,9 @@ class NACA4(object):
             raise ValueError(msg)
 
     def camber_line(self, x):
-        """ Returns the (local) camber line of the airfoil """
+        """
+        Returns the (local) camber line of the airfoil.
+        """
 
         if x < 0 or x > 1:
             msg = 'Argument x should be within [0, 1]'
@@ -59,7 +61,9 @@ class NACA4(object):
         return z
 
     def camber_gradient(self, x):
-        """ Returns the (local) camber gradient of the airfoil """
+        """
+        Returns the (local) camber gradient of the airfoil.
+        """
 
         if x < 0 or x > 1:
             msg = 'Argument x should be within [0, 1]'
@@ -76,7 +80,9 @@ class NACA4(object):
         return dz
 
     def thickness(self, x):
-        """ Returns the (local) half-thickness distribution """
+        """
+        Returns the (local) half-thickness distribution.
+        """
 
         if x < 0 or x > 1:
             msg = 'Argument x should be within [0, 1]'
@@ -93,29 +99,33 @@ class NACA4(object):
         return t
 
     def upper_surface(self, x):
-        """ Returns the position of the upper sorface """
+        """
+        Returns the position of the upper surface.
+        """
 
         if x < 0 or x > 1:
             msg = 'Argument x should be within [0, 1]'
             raise ValueError(msg)
 
-        theta = np.arctan(self.camber_gradient(x))
+        theta = atan(self.camber_gradient(x))
 
-        xu = x - self.thickness(x) * np.sin(theta)
-        yu = self.camber_line(x) + self.thickness(x) * np.cos(theta)
+        xu = x - self.thickness(x) * sin(theta)
+        yu = self.camber_line(x) + self.thickness(x) * cos(theta)
 
         return xu, yu
 
     def lower_surface(self, x):
-        """ Returns the position of the lower surface """
+        """
+        Returns the position of the lower surface.
+        """
 
         if x < 0 or x > 1:
             msg = 'Argument x should be within [0, 1]'
             raise ValueError(msg)
 
-        theta = np.arctan(self.camber_gradient(x))
+        theta = atan(self.camber_gradient(x))
 
-        xl = x + self.thickness(x) * np.sin(theta)
-        yl = self.camber_line(x) - self.thickness(x) * np.cos(theta)
+        xl = x + self.thickness(x) * sin(theta)
+        yl = self.camber_line(x) - self.thickness(x) * cos(theta)
 
         return xl, yl

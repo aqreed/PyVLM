@@ -80,7 +80,7 @@ def dist_point2line(P, A, B):
 
     a = AB / (AB.dot(AB))**0.5
 
-    # Calculation of a normal vector to vector a, so 
+    # Calculation of a normal vector to vector a, so
     # cross_product(a, b) < 0 in a 2D euclidean space.
     b = empty_like(a)
     b[0] = a[1]

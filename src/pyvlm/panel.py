@@ -1,5 +1,3 @@
-import numpy as np
-
 from .geometry import area_4points
 from .vortices import (vortex_position_in_panel,
                        v_induced_by_horseshoe_vortex)
