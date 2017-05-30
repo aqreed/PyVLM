@@ -4,6 +4,15 @@ import numpy as np
 def cross_prod(a, b):
     """
     Simplified cross product of two 2D vectors.
+
+    Parameters
+    ----------
+    a, b : array_like
+           Vectors in a 2D-euclidean space
+
+    Returns
+    -------
+    x : float
     """
 
     x = a[0]*b[1] - a[1]*b[0]
@@ -14,6 +23,15 @@ def cross_prod(a, b):
 def vect_dot(a, b):
     """
     Simplified dot product of two 2D vectors.
+
+    Parameters
+    ----------
+    a, b : array_like
+           Vectors in a 2D-euclidean space
+
+    Returns
+    -------
+    x : float
     """
 
     x = a[0]*b[0] + a[1]*b[1]
