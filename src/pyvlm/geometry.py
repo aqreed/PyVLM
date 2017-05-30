@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import empty_like
 
 
 def cross_prod(a, b):
@@ -53,31 +53,10 @@ def norm_dir_vect(A, B):
     a : array_like
     """
 
-    a = (B - A) / np.linalg.norm(B - A)
+    AB = B - A
+    a = AB / (AB.dot(AB))**0.5
 
     return a
-
-
-def vect_perpendicular(a):
-    """
-    Normal vector to vector a, so cross_product(a, b) < 0
-    in a 2D euclidean space.
-
-    Parameters
-    ----------
-    a : array_like
-        Vector in a 2D-euclidean space
-
-    Returns
-    -------
-    b : array_like
-    """
-
-    b = np.empty_like(a)
-    b[0] = a[1]
-    b[1] = - a[0]
-
-    return b
 
 
 def dist_point2line(P, A, B):
@@ -99,8 +78,13 @@ def dist_point2line(P, A, B):
     AB = B - A
     PB = B - P
 
-    a = AB / np.linalg.norm(AB)
-    b = vect_perpendicular(a)
+    a = AB / (AB.dot(AB))**0.5
+
+    # Calculation of a normal vector to vector a, so 
+    # cross_product(a, b) < 0 in a 2D euclidean space.
+    b = empty_like(a)
+    b[0] = a[1]
+    b[1] = - a[0]
 
     if cross_prod((PB), a) == 0:
         d = 0
