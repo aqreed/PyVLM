@@ -36,7 +36,7 @@ def test_v_induced_by_horseshoe_vortex():
     P4 = np.array([1, 1])
 
     calculated_vel = v_induced_by_horseshoe_vortex(P, P1, P2, P3, P4)
-    expected_vel = -0.674191156
+    expected_vel = -0.674191156, -0.6030149
 
     assert_almost_equal(calculated_vel, expected_vel)
 

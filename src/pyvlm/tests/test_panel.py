@@ -70,7 +70,7 @@ def test_induced_velocity():
     CP = panel.control_point()
 
     calculated_induced_velocity = panel.induced_velocity(CP)
-    expected_induced_velocity = -0.7684680
+    expected_induced_velocity = -0.7684680, -0.543389
 
     assert_almost_equal(calculated_induced_velocity,
                         expected_induced_velocity)

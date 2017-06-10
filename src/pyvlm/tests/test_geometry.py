@@ -7,8 +7,28 @@ import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from pyvlm.geometry import (norm_dir_vect, vect_perpendicular,
+from pyvlm.geometry import (cross_prod, vect_dot, norm_dir_vect,
                             dist_point2line, area_4points)
+
+
+def test_cross_prod():
+    A = np.array([0, 0])
+    B = np.array([1, 1])
+
+    calculated_vector = cross_prod(A, B)
+    expected_vector = 0.0*1.0 - 0.0*1.0
+
+    assert_almost_equal(calculated_vector, expected_vector)
+
+
+def test_vect_dot():
+    A = np.array([0, 0])
+    B = np.array([1, 1])
+
+    calculated_vector = vect_dot(A, B)
+    expected_vector = 0.0*1.0 + 0.0*1.0
+
+    assert_almost_equal(calculated_vector, expected_vector)
 
 
 def test_norm_dir_vect():
@@ -17,15 +37,6 @@ def test_norm_dir_vect():
 
     calculated_vector = norm_dir_vect(A, B)
     expected_vector = np.sqrt(2)/2 * np.array([1, 1])
-
-    assert_almost_equal(calculated_vector, expected_vector)
-
-
-def test_vect_perpendicular():
-    a = np.array([1, 0])
-
-    calculated_vector = vect_perpendicular(a)
-    expected_vector = np.array([0, -1])
 
     assert_almost_equal(calculated_vector, expected_vector)
 
