@@ -144,6 +144,7 @@ def v_induced_by_finite_vortex_line(P, A, B, gamma=1):
     v : float
     """
 
+    pi = np.pi
     i = norm_dir_vect(A, B)  # vortex_2 direction vector
 
     i_PA = norm_dir_vect(P, A)  # PB direction vector
