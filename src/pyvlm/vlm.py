@@ -29,10 +29,7 @@ class PyVLM(object):
            m - nº of spanwise panels
     """
 
-    def __init__(self, V, alpha):
-        self.V = V
-        self.alpha = alpha
-
+    def __init__(self):
         self.Points = []
         self.Panels_points = []
         self.Panels_span = []
@@ -152,7 +149,7 @@ class PyVLM(object):
             plt.plot(P[0], P[1], 'ro')
         plt.show()
 
-    def vlm(self):
+    def vlm(self, V, alpha):
         """
         For a given set of panels (defined by its 4 points) and their
         chordwise position (referred to the local chord), both presented
@@ -171,8 +168,6 @@ class PyVLM(object):
         Panels_span = self.Panels_span
         Panels_chordwise_position = self.Chordwise_panel_positions
 
-        V = self.V
-        alpha = self.alpha
         rho = self.rho
 
         # 1. BOUNDARY CONDITION
@@ -231,6 +226,7 @@ class PyVLM(object):
 
         gamma = np.linalg.solve(A, Vinf_n)
 
+        # AERODYNAMIC FORCES
         l = np.zeros(N)
         d = np.zeros(N)
         for i in range(0, N):

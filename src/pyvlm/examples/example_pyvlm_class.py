@@ -27,18 +27,14 @@ import matplotlib.pyplot as plt
 from pyvlm.vlm import PyVLM
 
 
-# FLIGHT CONDITION PARAMETERS #
-V = 140.0
-alpha = np.deg2rad(0)
-
-pilatusPC12 = PyVLM(V, alpha)
+pilatusPC12 = PyVLM()
 
 # GEOMETRY DEFINITION #
 # Parameters
 c = 2.15  # root chord length
 b = 16.28  # panel span length
-n = 8  # number of panels chordwise
-m = 6  # number of panels spanwise
+n = 8  # number of panels (chordwise)
+m = 6  # number of panels (spanwise)
 
 # Left wing
 A = np.array([.414, -b/2])
@@ -66,4 +62,8 @@ pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
 # pilatusPC12.check_mesh()
 
 # SIMULATION
-pilatusPC12.vlm()
+# Flight condition parameters
+V = 140.0
+alpha = np.deg2rad(0)
+
+pilatusPC12.vlm(V, alpha)
