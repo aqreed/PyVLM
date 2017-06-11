@@ -1,7 +1,6 @@
 import numpy as np
 
-from .geometry import (cross_prod, vect_dot,
-                       norm_dir_vect, dist_point2line)
+from .geometry import (norm_dir_vect, dist_point2line)
 
 
 def vortex_position_in_panel(P1, P2, P3, P4):
@@ -81,44 +80,23 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     """
 
     pi = np.pi
-    epsilon = 1e-3
 
-    i_1 = np.array([-1, 0])  # trailing vortex(1) dir. vector
-    i_2 = norm_dir_vect(B, C)  # bound vortex(2) dir. vector
-    i_3 = np.array([1, 0])  # trailing vortex(3) dir. vector
+    a = P[0] - B[0]
+    b = P[1] - B[1]
+    c = P[0] - C[0]
+    d = P[1] - C[1]
+    e = (a**2 + b**2)**0.5
+    f = (c**2 + d**2)**0.5
+    g = C[0] - B[0]
+    h = C[1] - B[1]
 
-    # First trailing vortex segment x_Inf(+) -> A -> B
-    i_PB = norm_dir_vect(P, B)  # PB direction vector
-    h_1 = dist_point2line(P, A, B)  # distance to 1st tr. vortex
-    if h_1 < epsilon:
-        v_1 = 0
-    else:
-        sign_1 = np.sign(cross_prod(i_PB, i_1))
-        cos_2 = vect_dot(-i_PB, i_1)
-        v_1 = sign_1 * (gamma/(4 * pi * h_1)) * (1 - cos_2)
+    v_bounded = (1/(a*d - c*b)) * (((g*a + h*b)/e) - ((g*c + h*d)/f))
+    v_bounded /= 4*pi  # Induced velocity in P due to bounded vortex
 
-    # Bound vortex segment B -> C
-    i_PC = norm_dir_vect(P, C)  # PC direction vector
-    h_2 = dist_point2line(P, B, C)  # distance to bound vortex
-    if h_2 < epsilon:
-        v_2 = 0
-    else:
-        sign_2 = np.sign(cross_prod(i_PC, i_2))
-        cos_1 = vect_dot(-i_PB, i_2)
-        cos_2 = vect_dot(-i_PC, i_2)
-        v_2 = sign_2 * (gamma/(4 * pi * h_2)) * (cos_1 - cos_2)
+    v_trail = -(a + e)/(b*e) + (c + f)/(d*f)
+    v_trail /= 4*pi  # Induced velocity in P due to trailing vortices
 
-    # Second trailing vortex segment C -> D -> x_Inf(+)
-    h_3 = dist_point2line(P, C, D)  # distance to 2nd tr. vortex
-    if h_3 < epsilon:
-        v_3 = 0
-    else:
-        sign_3 = np.sign(cross_prod(i_PC, i_3))
-        cos_1 = vect_dot(-i_PC, i_3)
-        v_3 = sign_3 * (gamma/(4 * pi * h_3)) * (cos_1 + 1)
-
-    v_trail = v_1 + v_3  # Induced velocity in P due to trailing vortices
-    v_total = v_trail + v_2  # Total induced velocity in P
+    v_total = v_trail + v_bounded  # Total induced velocity in P
 
     return v_total, v_trail
 
