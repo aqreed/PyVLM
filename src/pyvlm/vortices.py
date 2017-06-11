@@ -129,10 +129,10 @@ def v_induced_by_finite_vortex_line(P, A, B, gamma=1):
     i_PB = norm_dir_vect(P, B)  # PC direction vector
 
     h = dist_point2line(P, A, B)  # distance to vortex_2
-    sign = np.sign(cross_prod(i_PA, i))
+    sign = np.sign(np.cross(i_PA, i))
 
-    cos_1 = vect_dot(-i_PA, i)
-    cos_2 = vect_dot(-i_PB, i)
+    cos_1 = np.dot(-i_PA, i)
+    cos_2 = np.dot(-i_PB, i)
     v = sign * (gamma/(4 * pi * h)) * (cos_1 - cos_2)
 
     return v
