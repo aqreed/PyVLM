@@ -37,6 +37,17 @@ class PyVLM(object):
 
         self.rho = 1.225
 
+    def reset(self):
+        """
+        Resets values of the list containing the information of the mesh.
+        Use when a different geometry or mesh discretization is needed.
+        """
+
+        self.Points = []
+        self.Panels_points = []
+        self.Panels_span = []
+        self.Chordwise_panel_positions = []
+
     def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
         """
         Allows to add wings, stabilizers, canard wings or any other
@@ -149,19 +160,18 @@ class PyVLM(object):
             plt.plot(P[0], P[1], 'ro')
         plt.show()
 
-    def vlm(self, V, alpha):
+    def vlm(self, V, alpha, print_output=False):
         """
         For a given set of panels (defined by its 4 points) and their
         chordwise position (referred to the local chord), both presented
         as lists, applies the VLM theory:
 
-            - Calculates the induced velocity produced by all the
-              associated horseshoe vortices of strength=1 on each panel,
-              calculated on its control point where the boundary condition
-              will be imposed.
-            - Computes the circulation by solving the linear equation.
-
-        Then it produces the forces acting on each panel.
+            1. Calculates the induced velocity produced by all the
+               associated horseshoe vortices of strength=1 on each panel,
+               calculated on its control point where the boundary condition
+               will be imposed.
+            2. Computes the circulation by solving the linear equation.
+            3. Calculates the aerodynamic forces.
         """
 
         Panels = self.Panels_points
@@ -220,13 +230,13 @@ class PyVLM(object):
             Vinf_n[i] = alpha - airfoil.camber_gradient(position)
             Vinf_n[i] *= -V
 
-        # 2. CIRCULATION (gamma)
+        # 2. CIRCULATION (Γ or gamma)
         # by solving the linear equation (AX = Y) where X = gamma
         # and Y = Vinf_n
 
         gamma = np.linalg.solve(A, Vinf_n)
 
-        # AERODYNAMIC FORCES
+        # 3. AERODYNAMIC FORCES
         l = np.zeros(N)
         d = np.zeros(N)
         for i in range(0, N):
@@ -236,12 +246,13 @@ class PyVLM(object):
         L = sum(l)
         D = sum(d)
 
-        print('\n Panel | Vinf_n | Gamma |   Wi   |alpha_i|    l   |   d  |')
-        print('----------------------------------------------------------')
-        for i in range(0, len(Panels)):
-            print('  %2s   |  %5.2f | %5.2f | %6.3f | %5.3f |%7.1f | %4.2f |'
-                  % (i, Vinf_n[i], gamma[i], W_induced[i],
-                     np.rad2deg(alpha_induced[i]), l[i], d[i]))
-        print('\n L = %6.3f     D = %6.3f ' % (L, D))
+        if (print_output is True):
+            print('\nPanel|  V∞_n |   Wi  |  α_i  |   Γ   |    l   |   d  |')
+            print('------------------------------------------------------')
+            for i in range(0, len(Panels)):
+                print(' %2s  | %5.2f | %5.2f | %5.2f | %5.2f |%7.1f | %4.2f |'
+                      % (i, Vinf_n[i], W_induced[i],
+                         np.rad2deg(alpha_induced[i]), gamma[i], l[i], d[i]))
+            print('\n L = %6.3f     D = %6.3f \n' % (L, D))
 
         return L, D
