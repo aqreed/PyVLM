@@ -90,10 +90,24 @@ def v_induced_by_horseshoe_vortex(P, A, B, C, D, gamma=1):
     g = C[0] - B[0]
     h = C[1] - B[1]
 
-    v_bounded = (1/(a*d - c*b)) * (((g*a + h*b)/e) - ((g*c + h*d)/f))
-    v_bounded /= 4*pi  # Induced velocity in P due to bounded vortex
+    div = a*d - c*b
+    if (div == 0):
+        v_bounded = 0
+    else:
+        v_bounded = (1/div) * (((g*a + h*b)/e) - ((g*c + h*d)/f))
+        v_bounded /= 4*pi  # Induced velocity in P due to bounded vortex
 
-    v_trail = -(a + e)/(b*e) + (c + f)/(d*f)
+    if (b == 0):
+        v_trail1 = 0
+    else:
+        v_trail1 = -(a + e)/(b*e)
+
+    if (d == 0):
+        v_trail2 = 0
+    else:
+        v_trail2 = (c + f)/(d*f)
+
+    v_trail = v_trail1 + v_trail2
     v_trail /= 4*pi  # Induced velocity in P due to trailing vortices
 
     v_total = v_trail + v_bounded  # Total induced velocity in P
