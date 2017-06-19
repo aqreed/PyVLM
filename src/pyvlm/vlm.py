@@ -145,10 +145,10 @@ class PyVLM(object):
         # for i in range(0, len(Points)):
         #     print('  %2s   |' % i, np.round(Points[i], 2))
 
-        print('\n Panel | Chrd %  |  Span  |  Points coordinates')
+        print('\nPanel| Chrd% |  Span |  Points coordinates')
         print('------------------------------------------------')
         for i in range(0, len(Panels)):
-            print('  %2s   |  %4.2f  | %5.4f | '
+            print(' %3s | %5.2f | %5.3f | '
                   % (i, 100*Panels_chordwise_pos[i], Panels_span[i]),
                   np.round(Panels[i][0], 2), np.round(Panels[i][1], 2),
                   np.round(Panels[i][2], 2), np.round(Panels[i][3], 2))
@@ -196,7 +196,7 @@ class PyVLM(object):
         #       vortices on the panel i
 
         N = len(Panels)
-        A = np.zeros(shape=(N, N))
+        A = np.zeros(shape=(N, N))  # Aerodynamic Influence Coefficient matrix
         W_induced = np.zeros(N)  # induced velocity by trailing vortices
         alpha_induced = np.zeros(N)  # induces angle of attack
 
@@ -247,10 +247,10 @@ class PyVLM(object):
         D = sum(d)
 
         if (print_output is True):
-            print('\nPanel|  V∞_n |   Wi  |  α_i  |   Γ   |    l   |   d  |')
-            print('------------------------------------------------------')
+            print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |    l   |   d  |')
+            print('-------------------------------------------------------')
             for i in range(0, len(Panels)):
-                print(' %2s  | %5.2f | %5.2f | %5.2f | %5.2f |%7.1f | %4.2f |'
+                print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |'
                       % (i, Vinf_n[i], W_induced[i],
                          np.rad2deg(alpha_induced[i]), gamma[i], l[i], d[i]))
             print('\n L = %6.3f     D = %6.3f \n' % (L, D))
