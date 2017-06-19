@@ -66,4 +66,4 @@ pilatusPC12.add_geometry(leading_edges_coord, chord_lengths, n, m)
 V = 140.0
 alpha = np.deg2rad(0)
 
-pilatusPC12.vlm(V, alpha)
+pilatusPC12.vlm(V, alpha, True)
