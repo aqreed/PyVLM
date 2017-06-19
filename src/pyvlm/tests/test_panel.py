@@ -42,8 +42,8 @@ def test_vortex_position():
 
     calculated_vortex_position = panel._vortex_position()
     expected_vortex_position = [np.array([0.75, 0.5]),
-                                np.array([0.75, 0]), np.array([0.25, 0]),
-                                np.array([0.25, 1]), np.array([0.75, 1])]
+                                np.array([0.25, 0]),
+                                np.array([0.25, 1])]
 
     assert_almost_equal(calculated_vortex_position,
                         expected_vortex_position)
