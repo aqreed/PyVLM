@@ -44,12 +44,12 @@ class Panel(object):
 
     def _vortex_position(self):
         """
-        Returns the (x, y) coordinates of the four points that define the
+        Returns the (x, y) coordinates of the two points that define the
         position of the vortex horseshoe within the panel plus the control
-        point, identified as PABCD in the documentation above.
+        point, identified as PAB in the documentation above.
 
                 *Reminder: the coordinates are returned as a list,
-                           following the order [P, A, B, C, D]
+                           following the order [P, A, B]
         """
 
         points_of_the_vortex = vortex_position_in_panel(self.P1,
@@ -78,8 +78,6 @@ class Panel(object):
         _points_vortex = self._vortex_position()
         v = v_induced_by_horseshoe_vortex(control_point_pos,
                                           _points_vortex[1],
-                                          _points_vortex[2],
-                                          _points_vortex[3],
-                                          _points_vortex[4])
+                                          _points_vortex[2])
 
         return v[0], v[1]
