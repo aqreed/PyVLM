@@ -1,24 +1,19 @@
 """
-    This example shows the use of the PyVLM class in order
-    to generate the wing planform of a Pilatus PC12 airplane.
+    This example shows how to use the PyVLM class in to generate the
+    wing planform of a Pilatus PC12 airplane.
 
-    The left wing will be characterised using the following
-    nomenclature while the right wing will be created as the
-    specular image of the left wing:
+    The right wing will be defined using the following nomenclature while
+    the left wing will be created as the specular image of the other:
 
-    Y  ^   +----+
+    Y  ^ B +----+
        |  /      \
        | /        \
        |/          \
-       +------------+
+     A +------------+
        +-------------------->
-     B +------------+        X
-        \          /
-         \        /
-          \      /
-         A +----+
-"""
+                             X
 
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -28,14 +23,13 @@ from pyvlm.vlm import PyVLM
 pilatusPC12 = PyVLM()
 
 # Geometry parameters
-c, b = 2.15, 16.28  # root chord length, panel span length
-n, m = 8, 6  # number of panels (chordwise, spanwise)
+A = np.array([0, 1.03])  # root chord leading edge position
+B = np.array([.414, 8.14])  # root chord leading edge position
 
-# Left wing
-A, B = np.array([.414, -b/2]), np.array([0, -1.03])
 leading_edges_coord = [A, B]
-chord_lengths = [1.24, c]
+chord_lengths = [2.15, 1.24]  # root, tip
 
+n, m = 3, 4  # number of panels (chordwise, spanwise)
 pilatusPC12.add_wing(leading_edges_coord, chord_lengths, n, m)
 pilatusPC12.check_mesh()
 
