@@ -48,12 +48,13 @@ class PyVLM(object):
         self.Panels_span = []
         self.Chordwise_panel_positions = []
 
-    def add_geometry(self, lead_edge_coord, chord_lengths, n, m):
+    def add_wing(self, lead_edge_coord, chord_lengths, n, m):
         """
-        Allows to add wings, stabilizers, canard wings or any other
-        lifting surface to the mesh. These are defined by their chords'
+        Allows to add a wings to the mesh. It is defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
         density of the mesh can be controlled through n and m.
+        ONLY half a wing is needed to define it. A specular image will
+        be used to create the other half.
         """
 
         if len(lead_edge_coord) != len(chord_lengths):
@@ -61,7 +62,6 @@ class PyVLM(object):
             raise ValueError(msg)
 
         # MESH GENERATION
-
         # When more than two chords -with their respectives leading
         # edges coordinates- are provided, it iterates through the
         # list containing both location and length
@@ -82,6 +82,28 @@ class PyVLM(object):
             # The points of the mesh, its panels - sets of 4 points
             # orderly arranged -, the position of each panel relative to
             # its local chord and the span of each panel are calculated
+
+            Points_ = mesh.points()
+            Panels_points_ = mesh.panels()
+            Panels_span_ = mesh.panels_span()
+            Chordwise_panel_positions_ = mesh.panel_chord_positions()
+
+            self.Points.extend(Points_)
+            self.Panels_points.extend(Panels_points_)
+            self.Panels_span.extend(Panels_span_)
+            self.Chordwise_panel_positions.extend(Chordwise_panel_positions_)
+
+        # Specular image to generate the other half wing
+        lead_edge_coord_ = lead_edge_coord[::-1]
+        chord_lengths_ = chord_lengths[::-1]
+
+        for k in range(0, Nle - 1):
+            leading_edges = [lead_edge_coord_[k]*[1, -1],
+                             lead_edge_coord_[k + 1]*[1, -1]]
+            chords = [chord_lengths_[k],
+                      chord_lengths_[k + 1]]
+
+            mesh = Mesh(leading_edges, chords, n, m)
 
             Points_ = mesh.points()
             Panels_points_ = mesh.panels()
