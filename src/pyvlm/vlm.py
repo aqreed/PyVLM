@@ -8,9 +8,9 @@ from .airfoils import NACA4
 
 class PyVLM(object):
     """
-    Given a geometry, angle of attack, upstream velocity and mesh
-    chordwise and spanwise densities, applies the VLM theory to
-    the defined lifting surface.
+    Given a geometry, mesh chordwise and spanwise densities, angle of
+    attack, upstream velocity and, applies the VLM theory to the
+    defined lifting surface.
     """
 
     def __init__(self):
@@ -21,7 +21,7 @@ class PyVLM(object):
 
     def add_wing(self, lead_edge_coord, chord_lengths, n, m):
         """
-        Allows to add a wings to the mesh. It is defined by its chords'
+        Allows the addition of a wing to the mesh, defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
         density of the mesh can be controlled through n and m.
         ONLY half a wing is needed to define it. A specular image will
@@ -47,11 +47,11 @@ class PyVLM(object):
         # MESH GENERATION
         # When more than two chords -with their respectives leading
         # edges coordinates- are provided, it iterates through the
-        # list containing both location and length
+        # lists containing both location and length.
 
         Nle = len(lead_edge_coord)
 
-        for k in range(0, Nle - 1):
+        for k in range(Nle - 1):
             leading_edges = [lead_edge_coord[k],
                              lead_edge_coord[k + 1]]
             chords = [chord_lengths[k],
@@ -62,9 +62,8 @@ class PyVLM(object):
 
             mesh = Mesh(leading_edges, chords, n, m)
 
-            # The points of the mesh, its panels - sets of 4 points
-            # orderly arranged -, the position of each panel relative to
-            # its local chord and the span of each panel are calculated
+            # The points of the mesh and its panels - sets of 4 points
+            # orderly arranged - are calculated
 
             Points_ = mesh.points()
             Panels_ = mesh.panels()
@@ -72,11 +71,11 @@ class PyVLM(object):
             self.Points.extend(Points_)
             self.Panels.extend(Panels_)
 
-        # Specular image to generate the other half wing
+        # Specular image to generate the opposite semi-span of the wing
         lead_edge_coord_ = lead_edge_coord[::-1]
         chord_lengths_ = chord_lengths[::-1]
 
-        for k in range(0, Nle - 1):
+        for k in range(Nle - 1):
             leading_edges = [lead_edge_coord_[k]*[1, -1],
                              lead_edge_coord_[k + 1]*[1, -1]]
             chords = [chord_lengths_[k],
@@ -135,9 +134,9 @@ class PyVLM(object):
         # PRINTING AND PLOTTING
         print('\nPanel| Chrd% |  Span |  Points coordinates')
         print('------------------------------------------------')
-        for i in range(len(Panels)):
+        for i in range(N):
             print(' %3s | %5.2f | %5.3f | '
-                  % (i, 100*Panels[i].chordwise_position, Panels[i].span()),
+                  % (i, 100*Panels[i].chordwise_position, Panels[i].span),
                   np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
                   np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
 
@@ -150,9 +149,7 @@ class PyVLM(object):
 
     def vlm(self, V, alpha, print_output=False):
         """
-        For a given set of panels (defined by its 4 points) and their
-        chordwise position (referred to the local chord), both presented
-        as lists, applies the VLM theory:
+        For a given set of panels applies the VLM theory:
 
             1. Calculates the induced velocity produced by all the
                associated horseshoe vortices of strength=1 on each panel,
@@ -166,7 +163,7 @@ class PyVLM(object):
         V : float
             Upstream flow velocity
         alpha : float
-            Angle of attack of the surface
+            Angle of attack of the wing
         """
 
         Panels = self.Panels
@@ -177,40 +174,37 @@ class PyVLM(object):
         # components of (a) induced velocity "Wn" by horshoe vortices of
         # strength=1 and (b) upstream normal velocity "Vinf_n"
 
-        #   1.a INDUCED VELOCITIES
-        #     - "Wn", normal component of the total induced velocity by the
-        #       horshoe vortices, stored in the matrix "A" where the element
-        #       Aij is the velocity induced by the horshoe vortex in panel j
-        #       on the control point of panel i
-        #     - also the induced velocity by *only* trailing vortices "Wi" is
-        #       calculated and stored in the array "W_induced", where the
-        #       element Winduced[i] is the velocity induced by all the trailing
-        #       vortices on the panel i
+        #   (a) INDUCED VELOCITIES
+        #     - "Wn", normal component of the total induced velocity by
+        #       the horshoe vortices, stored in the matrix "AIC" where the
+        #       element Aij is the velocity induced by the horshoe vortex
+        #       in panel j on panel i
+        #     - also the induced velocity by *only* the trailing vortices
+        #        "Wi" on panel i is calculated and stored in the Panel object
+        #       attribute "accul_trail_induced_vel"
 
         N = len(Panels)
-        A = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
+        AIC = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
 
         for i in range(N):
             panel_pivot = Panels[i]
-            s = panel_pivot.area()
             CP = panel_pivot.control_point()
 
             Wi_ = 0
             for j in range(N):
                 panel = Panels[j]
                 Wn, Wi = panel.induced_velocity(CP)
-                A[i, j] = Wn
-                Wi_ += Wi  # induced velocity by all trailing vortices
+                AIC[i, j] = Wn  # induced velocity (normal) by horshoe vortices
+                Wi_ += Wi  # induced velocity (normal) by trailing vortices
 
-            Panels[i].accumul_induced_velocity = Wi_
-            Panels[i].alpha_induced = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
+            Panels[i].accul_trail_ind_vel = Wi_
+            Panels[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
 
-        #   1.b UPSTREAM NORMAL VELOCITY
-        #     that will depend on the angle of attach -"alpha"- and the
-        #     camber gradient at each panel's position within the local
-        #     chord
+        #   (b) UPSTREAM NORMAL VELOCITY
+        #     It will depend on the angle of attach -"alpha"- and the camber
+        #     gradient at each panel's position within the local chord
 
-        Vinf_n = np.zeros(N)
+        Vinf_n = np.zeros(N)  # upstream (normal) velocity
 
         airfoil = NACA4()
         for i in range(N):
@@ -223,7 +217,7 @@ class PyVLM(object):
         # by solving the linear equation (AX = Y) where X = gamma
         # and Y = Vinf_n
 
-        gamma = np.linalg.solve(A, Vinf_n)
+        gamma = np.linalg.solve(AIC, Vinf_n)
 
         # 3. AERODYNAMIC FORCES
         L = 0
@@ -231,9 +225,9 @@ class PyVLM(object):
 
         for i in range(N):
             Panels[i].gamma = gamma[i]
-            Panels[i].l = V * rho * Panels[i].gamma * Panels[i].span()
-            Panels[i].d = rho * abs(Panels[i].gamma) * Panels[i].span() * \
-                          abs(Panels[i].accumul_induced_velocity)
+            Panels[i].l = V * rho * Panels[i].gamma * Panels[i].span
+            Panels[i].d = rho * abs(Panels[i].gamma) * Panels[i].span * \
+                          abs(Panels[i].accul_trail_ind_vel)
 
             L += Panels[i].l
             D += Panels[i].d
@@ -242,10 +236,10 @@ class PyVLM(object):
         if (print_output is True):
             print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |    l   |   d  |')
             print('-------------------------------------------------------')
-            for i in range(len(Panels)):
+            for i in range(N):
                 print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |'
-                      % (i, Panels[i].Vinf_n, Panels[i].accumul_induced_velocity,
-                         np.rad2deg(Panels[i].alpha_induced), Panels[i].gamma,
+                      % (i, Panels[i].Vinf_n, Panels[i].accul_trail_ind_vel,
+                         np.rad2deg(Panels[i].alpha_ind), Panels[i].gamma,
                          Panels[i].l, Panels[i].d))
             print('\n L = %6.3f     D = %6.3f \n' % (L, D))
 
