@@ -11,42 +11,13 @@ class PyVLM(object):
     Given a geometry, angle of attack, upstream velocity and mesh
     chordwise and spanwise densities, applies the VLM theory to
     the defined lifting surface.
-
-    Parameters
-    ----------
-    V : float
-        Upstream flow velocity
-    alpha : float
-            Angle of attack of the surface
-    lead_edge_coord : list (containing arrays)
-                      Coordinates of the leading edge points
-                      as arrays in a 2D euclidean space
-    chord_lengths : list
-                    Chord lenghts corresponding to the sections
-                    defined by the leading edge coordinates
-    n, m : integer
-           n - nº of chordwise panels
-           m - nº of spanwise panels
     """
 
     def __init__(self):
         self.Points = []
-        self.Panels_points = []
-        self.Panels_span = []
-        self.Chordwise_panel_positions = []
+        self.Panels = []
 
         self.rho = 1.225
-
-    def reset(self):
-        """
-        Resets values of the list containing the information of the mesh.
-        Use when a different geometry or mesh discretization is needed.
-        """
-
-        self.Points = []
-        self.Panels_points = []
-        self.Panels_span = []
-        self.Chordwise_panel_positions = []
 
     def add_wing(self, lead_edge_coord, chord_lengths, n, m):
         """
@@ -55,6 +26,18 @@ class PyVLM(object):
         density of the mesh can be controlled through n and m.
         ONLY half a wing is needed to define it. A specular image will
         be used to create the other half.
+
+        Parameters
+        ----------
+        lead_edge_coord : list (containing arrays)
+                          Coordinates of the leading edge points
+                          as arrays in a 2D euclidean space
+        chord_lengths : list
+                        Chord lenghts corresponding to the sections
+                        defined by the leading edge coordinates
+        n, m : integer
+               n - nº of chordwise panels
+               m - nº of spanwise panels
         """
 
         if len(lead_edge_coord) != len(chord_lengths):
@@ -84,14 +67,10 @@ class PyVLM(object):
             # its local chord and the span of each panel are calculated
 
             Points_ = mesh.points()
-            Panels_points_ = mesh.panels()
-            Panels_span_ = mesh.panels_span()
-            Chordwise_panel_positions_ = mesh.panel_chord_positions()
+            Panels_ = mesh.panels()
 
             self.Points.extend(Points_)
-            self.Panels_points.extend(Panels_points_)
-            self.Panels_span.extend(Panels_span_)
-            self.Chordwise_panel_positions.extend(Chordwise_panel_positions_)
+            self.Panels.extend(Panels_)
 
         # Specular image to generate the other half wing
         lead_edge_coord_ = lead_edge_coord[::-1]
@@ -106,14 +85,10 @@ class PyVLM(object):
             mesh = Mesh(leading_edges, chords, n, m)
 
             Points_ = mesh.points()
-            Panels_points_ = mesh.panels()
-            Panels_span_ = mesh.panels_span()
-            Chordwise_panel_positions_ = mesh.panel_chord_positions()
+            Panels_ = mesh.panels()
 
             self.Points.extend(Points_)
-            self.Panels_points.extend(Panels_points_)
-            self.Panels_span.extend(Panels_span_)
-            self.Chordwise_panel_positions.extend(Chordwise_panel_positions_)
+            self.Panels.extend(Panels_)
 
     def check_mesh(self):
         """
@@ -122,15 +97,13 @@ class PyVLM(object):
         """
 
         Points = self.Points
-        Panels = self.Panels_points
-        Panels_span = self.Panels_span
-        Panels_chordwise_pos = self.Chordwise_panel_positions
+        Panels = self.Panels
 
         # Check for coincident points
         N = len(Points)
-        for i in range(0, N):
+        for i in range(N):
             count = 0
-            for j in range(0, N):
+            for j in range(N):
                 if(((Points[j] == Points[i]).all()) is True):
                     count += 1
                     if(count > 1):
@@ -139,13 +112,11 @@ class PyVLM(object):
 
         # Check for incorrectly defined panels
         N = len(Panels)
-        for i in range(0, N):
-            P1, P2, P3, P4 = Panels[i][:]
-
-            P1P2 = P2 - P1
-            P1P3 = P3 - P1
-            P1P4 = P4 - P1
-            P3P4 = P4 - P3
+        for i in range(N):
+            P1P2 = Panels[i].P2 - Panels[i].P1
+            P1P3 = Panels[i].P3 - Panels[i].P1
+            P1P4 = Panels[i].P4 - Panels[i].P1
+            P3P4 = Panels[i].P4 - Panels[i].P3
 
             i_inf = np.array([1, 0])
 
@@ -162,22 +133,17 @@ class PyVLM(object):
                 raise ValueError(msg)
 
         # PRINTING AND PLOTTING
-        # print('\n Point |    Coordinates ')
-        # print('------------------------')
-        # for i in range(0, len(Points)):
-        #     print('  %2s   |' % i, np.round(Points[i], 2))
-
         print('\nPanel| Chrd% |  Span |  Points coordinates')
         print('------------------------------------------------')
-        for i in range(0, len(Panels)):
+        for i in range(len(Panels)):
             print(' %3s | %5.2f | %5.3f | '
-                  % (i, 100*Panels_chordwise_pos[i], Panels_span[i]),
-                  np.round(Panels[i][0], 2), np.round(Panels[i][1], 2),
-                  np.round(Panels[i][2], 2), np.round(Panels[i][3], 2))
+                  % (i, 100*Panels[i].chordwise_position, Panels[i].span()),
+                  np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
+                  np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
 
         plt.style.use('ggplot')
         plt.xlim(-5, 15), plt.ylim(-10, 10)
-        for i in range(0, len(Points)):
+        for i in range(len(Points)):
             P = Points[i]
             plt.plot(P[0], P[1], 'ro')
         plt.show()
@@ -194,12 +160,16 @@ class PyVLM(object):
                will be imposed.
             2. Computes the circulation by solving the linear equation.
             3. Calculates the aerodynamic forces.
+
+        Parameters
+        ----------
+        V : float
+            Upstream flow velocity
+        alpha : float
+            Angle of attack of the surface
         """
 
-        Panels = self.Panels_points
-        Panels_span = self.Panels_span
-        Panels_chordwise_position = self.Chordwise_panel_positions
-
+        Panels = self.Panels
         rho = self.rho
 
         # 1. BOUNDARY CONDITION
@@ -207,7 +177,7 @@ class PyVLM(object):
         # components of (a) induced velocity "Wn" by horshoe vortices of
         # strength=1 and (b) upstream normal velocity "Vinf_n"
 
-        #     1.a INDUCED VELOCITIES
+        #   1.a INDUCED VELOCITIES
         #     - "Wn", normal component of the total induced velocity by the
         #       horshoe vortices, stored in the matrix "A" where the element
         #       Aij is the velocity induced by the horshoe vortex in panel j
@@ -218,39 +188,36 @@ class PyVLM(object):
         #       vortices on the panel i
 
         N = len(Panels)
-        A = np.zeros(shape=(N, N))  # Aerodynamic Influence Coefficient matrix
-        W_induced = np.zeros(N)  # induced velocity by trailing vortices
-        alpha_induced = np.zeros(N)  # induces angle of attack
+        A = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
 
-        for i in range(0, N):
-            P1, P2, P3, P4 = Panels[i][:]
-            panel_pivot = Panel(P1, P2, P3, P4)
+        for i in range(N):
+            panel_pivot = Panels[i]
             s = panel_pivot.area()
             CP = panel_pivot.control_point()
 
             Wi_ = 0
-            for j in range(0, N):
-                PP1, PP2, PP3, PP4 = Panels[j][:]
-                panel = Panel(PP1, PP2, PP3, PP4)
+            for j in range(N):
+                panel = Panels[j]
                 Wn, Wi = panel.induced_velocity(CP)
                 A[i, j] = Wn
-                Wi_ += Wi
+                Wi_ += Wi  # induced velocity by all trailing vortices
 
-            W_induced[i] = Wi_
-            alpha_induced[i] = np.arctan(abs(W_induced[i])/V)  # rad
+            Panels[i].accumul_induced_velocity = Wi_
+            Panels[i].alpha_induced = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
 
-        #     1.b UPSTREAM NORMAL VELOCITY
+        #   1.b UPSTREAM NORMAL VELOCITY
         #     that will depend on the angle of attach -"alpha"- and the
         #     camber gradient at each panel's position within the local
         #     chord
 
-        Vinf_n = np.zeros(shape=N)
+        Vinf_n = np.zeros(N)
 
         airfoil = NACA4()
-        for i in range(0, N):
-            position = Panels_chordwise_position[i]
-            Vinf_n[i] = alpha - airfoil.camber_gradient(position)
-            Vinf_n[i] *= -V
+        for i in range(N):
+            position = Panels[i].chordwise_position
+            Panels[i].Vinf_n = alpha - airfoil.camber_gradient(position)
+            Panels[i].Vinf_n *= -V
+            Vinf_n[i] = Panels[i].Vinf_n
 
         # 2. CIRCULATION (Γ or gamma)
         # by solving the linear equation (AX = Y) where X = gamma
@@ -259,22 +226,27 @@ class PyVLM(object):
         gamma = np.linalg.solve(A, Vinf_n)
 
         # 3. AERODYNAMIC FORCES
-        l = np.zeros(N)
-        d = np.zeros(N)
-        for i in range(0, N):
-            l[i] = V * rho * gamma[i] * Panels_span[i]
-            d[i] = rho * abs(gamma[i]) * Panels_span[i] * abs(W_induced[i])
+        L = 0
+        D = 0
 
-        L = sum(l)
-        D = sum(d)
+        for i in range(N):
+            Panels[i].gamma = gamma[i]
+            Panels[i].l = V * rho * Panels[i].gamma * Panels[i].span()
+            Panels[i].d = rho * abs(Panels[i].gamma) * Panels[i].span() * \
+                          abs(Panels[i].accumul_induced_velocity)
 
+            L += Panels[i].l
+            D += Panels[i].d
+
+        # PRINTING
         if (print_output is True):
             print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |    l   |   d  |')
             print('-------------------------------------------------------')
-            for i in range(0, len(Panels)):
+            for i in range(len(Panels)):
                 print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |'
-                      % (i, Vinf_n[i], W_induced[i],
-                         np.rad2deg(alpha_induced[i]), gamma[i], l[i], d[i]))
+                      % (i, Panels[i].Vinf_n, Panels[i].accumul_induced_velocity,
+                         np.rad2deg(Panels[i].alpha_induced), Panels[i].gamma,
+                         Panels[i].l, Panels[i].d))
             print('\n L = %6.3f     D = %6.3f \n' % (L, D))
 
         return L, D

@@ -40,13 +40,8 @@ chord1|   |          chordwise position of each panel.
     -------
     mesh_points : list
                   Mesh points
-    mesh_panels : list (of lists)
-                  Mesh panels (defined by 4 points)
-    panel_pos_chordwise: list
-                         Mesh panels' center position
-                         w.r.t. the local chord
-    panels_span : list
-                  Mesh panels' span
+    mesh_panels : list
+                  Mesh panels
     """
 
     def __init__(self, leading_edges, chords, n, m):
@@ -56,8 +51,6 @@ chord1|   |          chordwise position of each panel.
         self.m = m
         self.mesh_points = []
         self.mesh_panels = []
-        self.panel_pos_chordwise = []
-        self.panel_span = []
 
     def points(self):
         """
@@ -89,30 +82,7 @@ chord1|   |          chordwise position of each panel.
         Yields a list of size (n*m) containing the panels, defined
         by 4 points previously calculated. The points are properly
         arranged to serve as locations for the horseshoe vortices.
-        """
 
-        n = self.n
-        m = self.m
-
-        N_panels = n * m
-
-        for i in range(0, N_panels):
-            k = int(i / m)
-            P1 = self.mesh_points[i + k + m + 1]
-            P2 = self.mesh_points[i + k]
-            P3 = self.mesh_points[i + k + 1]
-            P4 = self.mesh_points[i + k + m + 2]
-
-            self.mesh_panels.append([])
-            self.mesh_panels[i].append(P1)
-            self.mesh_panels[i].append(P2)
-            self.mesh_panels[i].append(P3)
-            self.mesh_panels[i].append(P4)
-
-        return self.mesh_panels
-
-    def panel_chord_positions(self):
-        """
         Yields a list of size (n*m), containing the chordwise position
         of each panel referred to the local chord, needed to compute its
         slope, aka its corresponding camber gradient.
@@ -120,40 +90,32 @@ chord1|   |          chordwise position of each panel.
 
         Pi = self.leading_edges[0]
         chord_1 = np.array([self.chords[0], 0])
+
         n = self.n
         m = self.m
 
         N_panels = n * m
 
         for i in range(0, N_panels):
+            # Panels list generation
             k = int(i / m)
-            P1 = self.mesh_panels[k * m][0]
-            P2 = self.mesh_panels[k * m][1]
+            P1 = self.mesh_points[i + k + m + 1]
+            P2 = self.mesh_points[i + k]
+            P3 = self.mesh_points[i + k + 1]
+            P4 = self.mesh_points[i + k + m + 2]
 
-            chord = P1 - P2
+            self.mesh_panels.append(Panel(P1, P2, P3, P4))
 
-            panel_center = P2 + chord / 2
+            # Chordwise position calculation
+            P1_ = self.mesh_panels[k * m].P1
+            P2_ = self.mesh_panels[k * m].P2
+
+            chord = P1_ - P2_
+
+            panel_center = P2_ + chord / 2
             le2panel_distance = np.linalg.norm(panel_center - Pi)
             relative_pos = le2panel_distance / np.linalg.norm(chord_1)
 
-            self.panel_pos_chordwise.append(relative_pos)
+            self.mesh_panels[i].chordwise_position = relative_pos
 
-        return self.panel_pos_chordwise
-
-    def panels_span(self):
-        """
-        Yields a list of size (n*m), containing the span of each one of
-        the panels.
-        """
-
-        n = self.n
-        m = self.m
-
-        N = n * m
-
-        for i in range(0, N):
-            P1, P2, P3, P4 = self.mesh_panels[i][:]
-            panel_ = Panel(P1, P2, P3, P4)
-            self.panel_span.append(panel_.span())
-
-        return self.panel_span
+        return self.mesh_panels

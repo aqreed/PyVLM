@@ -24,6 +24,13 @@ class Panel(object):
         self.P2 = P2
         self.P3 = P3
         self.P4 = P4
+        self.chordwise_position = 0  # panel center w.r.t. the local chord
+        self.accumul_induced_velocity = 0  # panel total ind. vel.
+        self.alpha_induced = 0  # panel induced angle of attack
+        self.Vinf_n = 0  # panel local upstream normal velocity
+        self.gamma = 0  # panel circulation value
+        self.l = 0  # panel lift force
+        self.d = 0  # panel drag force
 
     def area(self):
         """
