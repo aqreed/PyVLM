@@ -9,7 +9,7 @@ class Panel(object):
              |              Each panel is defined by the (x, y) coordinates
         P3-C-|-D-P4         of four points - namely P1, P2, P3 and P4 -
          | | | |  |         ordered clockwise. Points defining the horseshoe
-         | | +-P--|--->     - A, B, C and D - are named clockwise as well.
+         | | +-P--|--->     - A, B, C, D (and P)- are named clockwise as well.
          | |   |  |   x
         P2-B---A-P1
 
@@ -24,39 +24,24 @@ class Panel(object):
         self.P2 = P2
         self.P3 = P3
         self.P4 = P4
-        self.chordwise_position = 0  # panel center w.r.t. the local chord
-        self.accumul_induced_velocity = 0  # panel total ind. vel.
-        self.alpha_induced = 0  # panel induced angle of attack
-        self.Vinf_n = 0  # panel local upstream normal velocity
-        self.gamma = 0  # panel circulation value
-        self.l = 0  # panel lift force
-        self.d = 0  # panel drag force
-
-    def area(self):
-        """
-        Yields the area calculated with the points provided as arguments.
-        """
-
-        return area_4points(self.P1, self.P2, self.P3, self.P4)
-
-    def span(self):
-        """
-        Yields the span of the panel, which must be constant - P1P2 and
-        P3P4 must be parallel -.
-        """
-
-        b = self.P3[1] - self.P2[1]
-
-        return abs(b)
+        self.area = area_4points(P1, P2, P3, P4)
+        self.span = abs(self.P3[1] - self.P2[1])
+        self.chordwise_position = 0  # position w.r.t. the local chord
+        self.accul_trail_ind_vel = 0  # induced vel. by trailing vortices
+        self.alpha_ind = 0  # induced angle of attack
+        self.Vinf_n = 0  # local upstream normal velocity
+        self.gamma = 0  # circulation value
+        self.l = 0  # lift force
+        self.d = 0  # drag force
 
     def _vortex_position(self):
         """
         Returns the (x, y) coordinates of the two points that define the
         position of the vortex horseshoe within the panel plus the control
-        point, identified as PAB in the documentation above.
+        point, identified as P, B and C in the documentation above.
 
                 *Reminder: the coordinates are returned as a list,
-                           following the order [P, A, B]
+                           following the order [P, B, C]
         """
 
         points_of_the_vortex = vortex_position_in_panel(self.P1,
@@ -78,7 +63,7 @@ class Panel(object):
     def induced_velocity(self, control_point_pos):
         """
         Returns the induced velocity by a horseshoe vortex and the induced
-        velocity excluding the bounded segment at a control  point, defined
+        velocity excluding the bounded segment at a control point, defined
         as argument of the method.
         """
 
