@@ -46,7 +46,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
     B = P3 + P3P4 / 4
     P = T1 + (3/4) * T1T2
 
-    return [P, A, B]
+    return P, A, B
 
 
 def v_induced_by_horseshoe_vortex(P, A, B):

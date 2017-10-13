@@ -188,7 +188,7 @@ class PyVLM(object):
 
         for i in range(N):
             panel_pivot = Panels[i]
-            CP = panel_pivot.control_point()
+            CP = panel_pivot.CP
 
             Wi_ = 0
             for j in range(N):
