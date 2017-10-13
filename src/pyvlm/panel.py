@@ -29,7 +29,7 @@ class Panel(object):
 
         self.CP, self.A, self.B = vortex_position_in_panel(P1, P2, P3, P4)
         self.area = area_4points(P1, P2, P3, P4)
-        self.span = abs(self.P3[1] - self.P2[1])
+        self.span = abs(P3[1] - P2[1])
         self.chordwise_position = 0  # position w.r.t. the local chord
 
         self.accul_trail_ind_vel = 0  # induced vel. by trailing vortices
