@@ -49,7 +49,6 @@ class Panel(object):
         as argument of the method, that does not have to be its own CP.
         """
 
-        v = v_induced_by_horseshoe_vortex(control_point_pos,
-                                          self.A, self.B)
+        v = v_induced_by_horseshoe_vortex(control_point_pos, self.A, self.B)
 
         return v[0], v[1]
