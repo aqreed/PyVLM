@@ -35,43 +35,10 @@ def test_mesh_panels():
     mesh = Mesh(leading_edges_coord, chord_lengths, 1, 2)
     mesh.points()
 
-    calculated_panels = mesh.panels()
-    expected_panels = [[np.array([1, 0]), np.array([0, 0]),
-                        np.array([0, .5]), np.array([1, 0.5])],
-                       [np.array([1, 0.5]), np.array([0, 0.5]),
-                        np.array([0, 1]), np.array([1, 1])]]
+    panels = mesh.panels()
+    calculated_panel = [panels[0].P1, panels[0].P2,
+                        panels[0].P3, panels[0].P4]
+    expected_panel = [np.array([1, 0]), np.array([0, 0]),
+                      np.array([0, .5]), np.array([1, 0.5])]
 
-    assert_almost_equal(calculated_panels, expected_panels)
-
-
-def test_mesh_chordwise_panel_pos():
-    A, B = np.array([0, 0]), np.array([0, 1])
-
-    leading_edges_coord = [A, B]
-    chord_lengths = [1, 1]
-
-    mesh = Mesh(leading_edges_coord, chord_lengths, 1, 2)
-    mesh.points()
-    mesh.panels()
-
-    calculated_chordwise_panel_pos = mesh.panel_chord_positions()
-    expected_chordwise_panel_pos = np.array([.5, .5])
-
-    assert_almost_equal(calculated_chordwise_panel_pos,
-                        expected_chordwise_panel_pos)
-
-
-def test_mesh_panels_span():
-    A, B = np.array([0, 0]), np.array([0, 1])
-
-    leading_edges_coord = [A, B]
-    chord_lengths = [1, 1]
-
-    mesh = Mesh(leading_edges_coord, chord_lengths, 1, 2)
-    mesh.points()
-    mesh.panels()
-
-    calculated_panels_span = mesh.panels_span()
-    expected_panels_span = np.array([.5, .5])
-
-    assert_almost_equal(calculated_panels_span, expected_panels_span)
+    assert_almost_equal(calculated_panel, expected_panel)
