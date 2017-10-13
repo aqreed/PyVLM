@@ -16,12 +16,12 @@ def test_vortex_position_in_panel():
     P1 = np.array([1, 0])
     P2 = np.array([0, 0])
     P3 = np.array([0, 1])
-    P4 = np.array([1, 1])
+    P4 = np.array([0.5, 1])
 
     calculated_points = vortex_position_in_panel(P1, P2, P3, P4)
-    expected_points = [np.array([0.75, 0.5]),
+    expected_points = [np.array([0.5625, 0.5]),
                        np.array([0.25, 0]),
-                       np.array([0.25, 1])]
+                       np.array([0.125, 1])]
 
     assert_almost_equal(calculated_points, expected_points)
 
