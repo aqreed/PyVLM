@@ -42,32 +42,6 @@ class Panel(object):
         self.cl = 0  # lift force coefficient
         self.cd = 0  # drag force coefficient
 
-    def _vortex_position(self):
-        """
-        Returns the (x, y) coordinates of the two points that define the
-        position of the vortex horseshoe within the panel plus the control
-        point, identified as P, B and C in the documentation above.
-
-                *Reminder: the coordinates are returned as a list,
-                           following the order [P, B, C]
-        """
-
-        points_of_the_vortex = vortex_position_in_panel(self.P1,
-                                                        self.P2,
-                                                        self.P3,
-                                                        self.P4)
-
-        return points_of_the_vortex
-
-    def control_point(self):
-        """
-        Returns the (x, y) coordinates of the control point.
-        """
-
-        control_point_position = self._vortex_position()[0]
-
-        return control_point_position
-
     def induced_velocity(self, control_point_pos):
         """
         Returns the induced velocity by a horseshoe vortex and the induced
