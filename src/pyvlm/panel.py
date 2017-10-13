@@ -39,6 +39,8 @@ class Panel(object):
 
         self.l = 0  # lift force
         self.d = 0  # drag force
+        self.cl = 0  # lift force coefficient
+        self.cd = 0  # drag force coefficient
 
     def _vortex_position(self):
         """
