@@ -168,6 +168,7 @@ class PyVLM(object):
 
         Panels = self.Panels
         rho = self.rho
+        q_inf = (1 / 2) * rho * (V**2)
 
         # 1. BOUNDARY CONDITION
         # To impose the boundary condition we must calculate the normal
@@ -209,8 +210,7 @@ class PyVLM(object):
         airfoil = NACA4()
         for i in range(N):
             position = Panels[i].chordwise_position
-            Panels[i].Vinf_n = alpha - airfoil.camber_gradient(position)
-            Panels[i].Vinf_n *= -V
+            Panels[i].Vinf_n = -V * (alpha - airfoil.camber_gradient(position))
             Vinf_n[i] = Panels[i].Vinf_n
 
         # 2. CIRCULATION (Γ or gamma)
@@ -222,25 +222,34 @@ class PyVLM(object):
         # 3. AERODYNAMIC FORCES
         L = 0
         D = 0
+        S = 0
 
         for i in range(N):
             Panels[i].gamma = gamma[i]
             Panels[i].l = V * rho * Panels[i].gamma * Panels[i].span
+            Panels[i].cl = Panels[i].l / (q_inf * Panels[i].area)
+
             Panels[i].d = rho * abs(Panels[i].gamma) * Panels[i].span * \
                           abs(Panels[i].accul_trail_ind_vel)
+            Panels[i].cd = Panels[i].d / (q_inf * Panels[i].area)
 
             L += Panels[i].l
             D += Panels[i].d
+            S += Panels[i].area
+
+        CL = L / (q_inf * S)
+        CD = D / (q_inf * S)
 
         # PRINTING
         if (print_output is True):
-            print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |    l   |   d  |')
-            print('-------------------------------------------------------')
+            print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |    l   |   d  |   cl   |   cd    |')
+            print('--------------------------------------------------------------------------')
             for i in range(N):
-                print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |'
+                print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |%7.3f | %7.5f |'
                       % (i, Panels[i].Vinf_n, Panels[i].accul_trail_ind_vel,
                          np.rad2deg(Panels[i].alpha_ind), Panels[i].gamma,
-                         Panels[i].l, Panels[i].d))
-            print('\n L = %6.3f     D = %6.3f \n' % (L, D))
+                         Panels[i].l, Panels[i].d, Panels[i].cl, Panels[i].cd))
+            print('\n L = %6.3f  CL = %6.3f' % (L, CL))
+            print(' D = %6.3f     CD = %8.5f \n' % (D, CD))
 
-        return L, D
+        return CL, CD
