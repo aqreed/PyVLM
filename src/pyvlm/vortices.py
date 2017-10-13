@@ -15,7 +15,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
      P3--B--|-----P4
       |  |  |     |
       |  |  |     |
-      |  |  +--P--|---->
+     T1  |  +--P--T2---->
       |  |        |     x
       |  |        |
      P2--A--------P1
@@ -27,7 +27,7 @@ def vortex_position_in_panel(P1, P2, P3, P4):
 
     Returns
     -------
-    results : dict
+    [P, A, B] : dict
         P - control point where the boundary condition V*n = 0
             is applied according to the Vortice Lattice Method.
         A, B - points that define the horseshoe position
@@ -35,16 +35,18 @@ def vortex_position_in_panel(P1, P2, P3, P4):
 
     P2P1 = P1 - P2
     P3P4 = P4 - P3
+    P2P3 = P3 - P2
     P1P4 = P4 - P1
+
+    T1 = P2 + P2P3 / 2
+    T2 = P1 + P1P4 / 2
+    T1T2 = T2 - T1
 
     A = P2 + P2P1 / 4
     B = P3 + P3P4 / 4
+    P = T1 + (3/4) * T1T2
 
-    P = P2 + P2P1*(3/4) + P1P4 / 2
-
-    results = [P, A, B]
-
-    return results
+    return [P, A, B]
 
 
 def v_induced_by_horseshoe_vortex(P, A, B):
