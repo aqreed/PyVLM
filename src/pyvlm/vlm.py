@@ -166,7 +166,7 @@ class PyVLM(object):
             Angle of attack of the wing
         """
 
-        Panels = self.Panels
+        Panel = self.Panels
         rho = self.rho
         q_inf = (1 / 2) * rho * (V**2)
 
@@ -184,22 +184,22 @@ class PyVLM(object):
         #        "Wi" on panel i is calculated and stored in the Panel object
         #       attribute "accul_trail_induced_vel"
 
-        N = len(Panels)
+        N = len(Panel)
         AIC = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
 
         for i in range(N):
-            panel_pivot = Panels[i]
+            panel_pivot = Panel[i]
             CP = panel_pivot.CP
 
             Wi_ = 0
             for j in range(N):
-                panel = Panels[j]
+                panel = Panel[j]
                 Wn, Wi = panel.induced_velocity(CP)
                 AIC[i, j] = Wn  # induced velocity (normal) by horshoe vortices
                 Wi_ += Wi  # induced velocity (normal) by trailing vortices
 
-            Panels[i].accul_trail_ind_vel = Wi_
-            Panels[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
+            Panel[i].accul_trail_ind_vel = Wi_
+            Panel[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
 
         #   (b) UPSTREAM NORMAL VELOCITY
         #     It will depend on the angle of attach -"alpha"- and the camber
@@ -209,9 +209,9 @@ class PyVLM(object):
 
         airfoil = NACA4()
         for i in range(N):
-            position = Panels[i].chordwise_position
-            Panels[i].Vinf_n = -V * (alpha - airfoil.camber_gradient(position))
-            Vinf_n[i] = Panels[i].Vinf_n
+            position = Panel[i].chordwise_position
+            Panel[i].Vinf_n = -V * (alpha - airfoil.camber_gradient(position))
+            Vinf_n[i] = Panel[i].Vinf_n
 
         # 2. CIRCULATION (Γ or gamma)
         # by solving the linear equation (AX = Y) where X = gamma
@@ -225,17 +225,17 @@ class PyVLM(object):
         S = 0
 
         for i in range(N):
-            Panels[i].gamma = gamma[i]
-            Panels[i].l = V * rho * Panels[i].gamma * Panels[i].span
-            Panels[i].cl = Panels[i].l / (q_inf * Panels[i].area)
+            Panel[i].gamma = gamma[i]
+            Panel[i].l = V * rho * Panel[i].gamma * Panel[i].span
+            Panel[i].cl = Panel[i].l / (q_inf * Panel[i].area)
 
-            Panels[i].d = rho * abs(Panels[i].gamma) * Panels[i].span * \
-                          abs(Panels[i].accul_trail_ind_vel)
-            Panels[i].cd = Panels[i].d / (q_inf * Panels[i].area)
+            Panel[i].d = rho * abs(Panel[i].gamma) * Panel[i].span * \
+                          abs(Panel[i].accul_trail_ind_vel)
+            Panel[i].cd = Panel[i].d / (q_inf * Panel[i].area)
 
-            L += Panels[i].l
-            D += Panels[i].d
-            S += Panels[i].area
+            L += Panel[i].l
+            D += Panel[i].d
+            S += Panel[i].area
 
         CL = L / (q_inf * S)
         CD = D / (q_inf * S)
@@ -246,9 +246,9 @@ class PyVLM(object):
             print('--------------------------------------------------------------------------')
             for i in range(N):
                 print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |%7.3f | %7.5f |'
-                      % (i, Panels[i].Vinf_n, Panels[i].accul_trail_ind_vel,
-                         np.rad2deg(Panels[i].alpha_ind), Panels[i].gamma,
-                         Panels[i].l, Panels[i].d, Panels[i].cl, Panels[i].cd))
+                      % (i, Panel[i].Vinf_n, Panel[i].accul_trail_ind_vel,
+                         np.rad2deg(Panel[i].alpha_ind), Panel[i].gamma,
+                         Panel[i].l, Panel[i].d, Panel[i].cl, Panel[i].cd))
             print('\n L = %6.3f  CL = %6.3f' % (L, CL))
             print(' D = %6.3f     CD = %8.5f \n' % (D, CD))
 
