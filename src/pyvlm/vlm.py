@@ -9,14 +9,17 @@ from .airfoils import NACA4
 class PyVLM(object):
     """
     Given a geometry, mesh chordwise and spanwise densities, angle of
-    attack, upstream velocity and, applies the VLM theory to the
+    attack, upstream velocity, applies the VLM theory to the
     defined lifting surface.
     """
 
     def __init__(self):
         self.Points = []
         self.Panels = []
+
         self.AIC = 0
+        self.CL = 0
+        self.CD = 0
 
         self.rho = 1.225
 
@@ -241,8 +244,8 @@ class PyVLM(object):
             D += Panel[i].d
             S += Panel[i].area
 
-        CL = L / (q_inf * S)
-        CD = D / (q_inf * S)
+        self.CL = L / (q_inf * S)
+        self.CD = D / (q_inf * S)
 
         # PRINTING
         if (print_output is True):
@@ -253,7 +256,7 @@ class PyVLM(object):
                       % (i, Panel[i].Vinf_n, Panel[i].accul_trail_ind_vel,
                          np.rad2deg(Panel[i].alpha_ind), Panel[i].gamma,
                          Panel[i].l, Panel[i].d, Panel[i].cl, Panel[i].cd))
-            print('\n L = %6.3f  CL = %6.3f' % (L, CL))
-            print(' D = %6.3f     CD = %8.5f \n' % (D, CD))
+            print('\n L = %6.3f  CL = %6.3f' % (L, self.CL))
+            print(' D = %6.3f     CD = %8.5f \n' % (D, self.CD))
 
-        return CL, CD
+        return self.CL, self.CD
