@@ -16,6 +16,7 @@ class PyVLM(object):
     def __init__(self):
         self.Points = []
         self.Panels = []
+        self.AIC = 0
 
         self.rho = 1.225
 
@@ -168,6 +169,7 @@ class PyVLM(object):
 
         Panel = self.Panels
         rho = self.rho
+
         q_inf = (1 / 2) * rho * (V**2)
 
         # 1. BOUNDARY CONDITION
@@ -201,6 +203,8 @@ class PyVLM(object):
             Panel[i].accul_trail_ind_vel = Wi_
             Panel[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
 
+        self.AIC = AIC
+
         #   (b) UPSTREAM NORMAL VELOCITY
         #     It will depend on the angle of attach -"alpha"- and the camber
         #     gradient at each panel's position within the local chord
@@ -230,7 +234,7 @@ class PyVLM(object):
             Panel[i].cl = Panel[i].l / (q_inf * Panel[i].area)
 
             Panel[i].d = rho * abs(Panel[i].gamma) * Panel[i].span * \
-                          abs(Panel[i].accul_trail_ind_vel)
+                         abs(Panel[i].accul_trail_ind_vel)
             Panel[i].cd = Panel[i].d / (q_inf * Panel[i].area)
 
             L += Panel[i].l
