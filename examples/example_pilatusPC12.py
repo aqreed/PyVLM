@@ -14,11 +14,11 @@
                              X
 
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 from pyvlm.vlm import PyVLM
-
 
 pilatusPC12 = PyVLM()
 
@@ -29,16 +29,11 @@ B = np.array([.414, 8.14])  # tip chord leading edge position
 leading_edges_position = [A, B]
 chord_length = [2.15, 1.24]  # root, tip
 
-n, m = 3, 4  # number of panels (chordwise, spanwise)
+n, m = 10, 5  # number of panels (chordwise, spanwise)
 pilatusPC12.add_wing(leading_edges_position, chord_length, n, m)
-pilatusPC12.check_mesh()
+# pilatusPC12.check_mesh()
+alpha, CL, CD = pilatusPC12.aerodyn_forces_coeff()
 
-# Flight condition parameters
-V = 140.0
-alpha = np.deg2rad(0)
-
-print('\nResults for the following flight conditions:'
-      '\n    V = %4.1f m/s \n    alpha = %3.1f degrees'
-      % (V, np.rad2deg(alpha)))
-
-pilatusPC12.vlm(V, alpha, True)
+plt.style.use('ggplot')
+plt.plot(alpha, CD)
+plt.show()

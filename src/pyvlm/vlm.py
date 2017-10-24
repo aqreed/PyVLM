@@ -18,8 +18,9 @@ class PyVLM(object):
         self.Panels = []
 
         self.AIC = 0
-        self.CL = 0
-        self.CD = 0
+        self.alpha = []
+        self.CL = []
+        self.CD = []
 
         self.rho = 1.225
 
@@ -151,7 +152,7 @@ class PyVLM(object):
             plt.plot(P[0], P[1], 'ro')
         plt.show()
 
-    def vlm(self, V, alpha, print_output=False):
+    def vlm(self, alpha, print_output=False):
         """
         For a given set of panels applies the VLM theory:
 
@@ -164,14 +165,13 @@ class PyVLM(object):
 
         Parameters
         ----------
-        V : float
-            Upstream flow velocity
         alpha : float
             Angle of attack of the wing
         """
 
         Panel = self.Panels
         rho = self.rho
+        V = 1.0
 
         q_inf = (1 / 2) * rho * (V**2)
 
@@ -236,27 +236,40 @@ class PyVLM(object):
             Panel[i].l = V * rho * Panel[i].gamma * Panel[i].span
             Panel[i].cl = Panel[i].l / (q_inf * Panel[i].area)
 
-            Panel[i].d = rho * abs(Panel[i].gamma) * Panel[i].span * \
-                         abs(Panel[i].accul_trail_ind_vel)
+            Panel[i].d = V * rho * abs(Panel[i].gamma) * Panel[i].span * \
+                         abs(Panel[i].accul_trail_ind_vel)  # TODO: check
             Panel[i].cd = Panel[i].d / (q_inf * Panel[i].area)
 
             L += Panel[i].l
             D += Panel[i].d
             S += Panel[i].area
 
-        self.CL = L / (q_inf * S)
-        self.CD = D / (q_inf * S)
+        CL = L / (q_inf * S)
+        CD = D / (q_inf * S)
 
         # PRINTING
         if (print_output is True):
-            print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |    l   |   d  |   cl   |   cd    |')
-            print('--------------------------------------------------------------------------')
+            print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |   cl   |   cd    |')
+            print('----------------------------------------------------------')
             for i in range(N):
-                print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.1f | %4.2f |%7.3f | %7.5f |'
+                print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.3f | %7.5f |'
                       % (i, Panel[i].Vinf_n, Panel[i].accul_trail_ind_vel,
                          np.rad2deg(Panel[i].alpha_ind), Panel[i].gamma,
-                         Panel[i].l, Panel[i].d, Panel[i].cl, Panel[i].cd))
-            print('\n L = %6.3f  CL = %6.3f' % (L, self.CL))
-            print(' D = %6.3f     CD = %8.5f \n' % (D, self.CD))
+                         Panel[i].cl, Panel[i].cd))
+            print('\n CL = %6.3f' % CL)
+            print(' CD = %8.5f \n' % CD)
 
-        return self.CL, self.CD
+        return CL, CD
+
+    def aerodyn_forces_coeff(self):
+        """
+        For a given geometry applies the VLM theory for angles of attack
+        (alpha) between -15 and 15 degrees, returning CL and CD as lists.
+        """
+        for i in range(-15, 15, 2):
+            cl_, cd_ = self.vlm(np.deg2rad(i), False)
+            self.alpha.append(i)
+            self.CL.append(cl_)
+            self.CD.append(cd_)
+
+        return self.alpha, self.CL, self.CD
