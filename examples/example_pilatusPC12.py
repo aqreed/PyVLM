@@ -29,11 +29,22 @@ B = np.array([.414, 8.14])  # tip chord leading edge position
 leading_edges_position = [A, B]
 chord_length = [2.15, 1.24]  # root, tip
 
-n, m = 10, 5  # number of panels (chordwise, spanwise)
+n, m = 4, 3  # number of panels (chordwise, spanwise)
 pilatusPC12.add_wing(leading_edges_position, chord_length, n, m)
-# pilatusPC12.check_mesh()
+pilatusPC12.check_mesh(plott=True)
+
 alpha, CL, CD = pilatusPC12.aerodyn_forces_coeff()
 
 plt.style.use('ggplot')
+
+plt.subplot(1, 2, 1)
+plt.title("CL")
+plt.xlabel("alpha")
+plt.plot(alpha, CL)
+
+plt.subplot(1, 2, 2)
+plt.title("CD")
+plt.xlabel("alpha")
 plt.plot(alpha, CD)
+
 plt.show()

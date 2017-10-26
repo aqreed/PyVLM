@@ -94,7 +94,7 @@ class PyVLM(object):
             self.Points.extend(Points_)
             self.Panels.extend(Panels_)
 
-    def check_mesh(self):
+    def check_mesh(self, printt=False, plott=False):
         """
         Prints the points of the mesh, the disposition of each panel and
         plots them for visual check.
@@ -137,20 +137,22 @@ class PyVLM(object):
                 raise ValueError(msg)
 
         # PRINTING AND PLOTTING
-        print('\nPanel| Chrd% |  Span |  Points coordinates')
-        print('------------------------------------------------')
-        for i in range(N):
-            print(' %3s | %5.2f | %5.3f | '
-                  % (i, 100*Panels[i].chordwise_position, Panels[i].span),
-                  np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
-                  np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
+        if (printt is True):
+            print('\nPanel| Chrd% |  Span |  Points coordinates')
+            print('------------------------------------------------')
+            for i in range(N):
+                print(' %3s | %5.2f | %5.3f | '
+                      % (i, 100*Panels[i].chordwise_position, Panels[i].span),
+                      np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
+                      np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
 
-        plt.style.use('ggplot')
-        plt.xlim(-5, 15), plt.ylim(-10, 10)
-        for i in range(len(Points)):
-            P = Points[i]
-            plt.plot(P[0], P[1], 'ro')
-        plt.show()
+        if (plott is True):
+            plt.style.use('ggplot')
+            plt.xlim(-5, 15), plt.ylim(-10, 10)
+            for i in range(len(Points)):
+                P = Points[i]
+                plt.plot(P[0], P[1], 'ro')
+            plt.show()
 
     def vlm(self, alpha, print_output=False):
         """
