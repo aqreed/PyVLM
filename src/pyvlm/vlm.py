@@ -94,10 +94,16 @@ class PyVLM(object):
             self.Points.extend(Points_)
             self.Panels.extend(Panels_)
 
-    def check_mesh(self, printt=False, plott=False):
+    def check_mesh(self, print_mesh=False, plot_mesh=False):
         """
         Prints the points of the mesh, the disposition of each panel and
         plots them for visual check.
+        Parameters
+        ----------
+        print_mesh : boolean
+            Self-explained
+        plot_mesh : boolean
+            Self-explained
         """
 
         Points = self.Points
@@ -137,7 +143,7 @@ class PyVLM(object):
                 raise ValueError(msg)
 
         # PRINTING AND PLOTTING
-        if (printt is True):
+        if (print_mesh is True):
             print('\nPanel| Chrd% |  Span |  Points coordinates')
             print('------------------------------------------------')
             for i in range(N):
@@ -146,7 +152,7 @@ class PyVLM(object):
                       np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
                       np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
 
-        if (plott is True):
+        if (plot_mesh is True):
             plt.style.use('ggplot')
             plt.xlim(-5, 15), plt.ylim(-10, 10)
             for i in range(len(Points)):
@@ -168,11 +174,14 @@ class PyVLM(object):
         Parameters
         ----------
         alpha : float
-            Angle of attack of the wing
+            Angle of attack of the wing(degrees)
+        print_output : boolean
+            Prints the calculation output
         """
 
         Panel = self.Panels
         rho = self.rho
+        alpha = np.deg2rad(alpha)
         V = 1.0
 
         q_inf = (1 / 2) * rho * (V**2)
@@ -211,8 +220,8 @@ class PyVLM(object):
         self.AIC = AIC
 
         #   (b) UPSTREAM NORMAL VELOCITY
-        #     It will depend on the angle of attach -"alpha"- and the camber
-        #     gradient at each panel's position within the local chord
+        #     It will depend on the angle of attack -"alpha"- and the camber
+        #     gradient at each panel' position within the local chord
 
         Vinf_n = np.zeros(N)  # upstream (normal) velocity
 
@@ -258,10 +267,11 @@ class PyVLM(object):
                       % (i, Panel[i].Vinf_n, Panel[i].accul_trail_ind_vel,
                          np.rad2deg(Panel[i].alpha_ind), Panel[i].gamma,
                          Panel[i].cl, Panel[i].cd))
-            print('\n CL = %6.3f' % CL)
-            print(' CD = %8.5f \n' % CD)
-
-        return CL, CD
+            print('\n For alpha = %3s degrees:' % np.rad2deg(alpha))
+            print('	CL = %6.3f' % CL)
+            print('	CD = %8.5f' % CD)
+        else:
+            return CL, CD
 
     def aerodyn_forces_coeff(self):
         """
@@ -269,7 +279,7 @@ class PyVLM(object):
         (alpha) between -15 and 15 degrees, returning CL and CD as lists.
         """
         for i in range(-15, 15, 2):
-            cl_, cd_ = self.vlm(np.deg2rad(i), False)
+            cl_, cd_ = self.vlm(i, False)
             self.alpha.append(i)
             self.CL.append(cl_)
             self.CD.append(cd_)
