@@ -201,23 +201,28 @@ class PyVLM(object):
         #       attribute "accul_trail_induced_vel"
 
         N = len(Panel)
-        AIC = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
 
-        for i in range(N):
-            panel_pivot = Panel[i]
-            CP = panel_pivot.CP
+        if (type(self.AIC) == int):
+            # In case it is the first time the method is called, it proceeds
+            # to compute the AIC matrix
 
-            Wi_ = 0
-            for j in range(N):
-                panel = Panel[j]
-                Wn, Wi = panel.induced_velocity(CP)
-                AIC[i, j] = Wn  # induced velocity (normal) by horshoe vortices
-                Wi_ += Wi  # induced velocity (normal) by trailing vortices
+            AIC = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
 
-            Panel[i].accul_trail_ind_vel = Wi_
-            Panel[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
+            for i in range(N):
+                panel_pivot = Panel[i]
+                CP = panel_pivot.CP
 
-        self.AIC = AIC
+                Wi_ = 0
+                for j in range(N):
+                    panel = Panel[j]
+                    Wn, Wi = panel.induced_velocity(CP)
+                    AIC[i, j] = Wn  # induced velocity (normal) by horshoe vortices
+                    Wi_ += Wi  # induced velocity (normal) by trailing vortices
+
+                Panel[i].accul_trail_ind_vel = Wi_
+                Panel[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
+
+            self.AIC = AIC
 
         #   (b) UPSTREAM NORMAL VELOCITY
         #     It will depend on the angle of attack -"alpha"- and the camber
@@ -235,7 +240,7 @@ class PyVLM(object):
         # by solving the linear equation (AX = Y) where X = gamma
         # and Y = Vinf_n
 
-        gamma = np.linalg.solve(AIC, Vinf_n)
+        gamma = np.linalg.solve(self.AIC, Vinf_n)
 
         # 3. AERODYNAMIC FORCES
         L = 0
