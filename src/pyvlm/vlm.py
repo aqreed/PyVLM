@@ -45,6 +45,8 @@ class PyVLM(object):
                m - nº of spanwise panels
         """
 
+        self.AIC = 0  # clears AIC when modifying the mesh
+
         if len(lead_edge_coord) != len(chord_lengths):
             msg = 'Same number of chords and leading edges required'
             raise ValueError(msg)
