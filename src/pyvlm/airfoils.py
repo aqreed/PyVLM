@@ -1,6 +1,87 @@
 from math import cos, sin, atan
 
 
+class flat_plate(object):
+    """
+    Flat plate.
+
+    Parameters
+    ----------
+    x : float
+        Chord position, from 0 to 1
+    """
+
+    # def __init__(self):
+    #     pass
+
+    def camber_line(self, x):
+        """
+        Returns the (local) camber line of the airfoil.
+        """
+
+        if x < 0 or x > 1:
+            msg = 'Argument x should be within [0, 1]'
+            raise ValueError(msg)
+
+        z = 0
+
+        return z
+
+    def camber_gradient(self, x):
+        """
+        Returns the (local) camber gradient of the airfoil.
+        """
+
+        if x < 0 or x > 1:
+            msg = 'Argument x should be within [0, 1]'
+            raise ValueError(msg)
+
+        dz = 0
+
+        return dz
+
+    def thickness(self, x):
+        """
+        Returns the (local) half-thickness distribution.
+        """
+
+        if x < 0 or x > 1:
+            msg = 'Argument x should be within [0, 1]'
+            raise ValueError(msg)
+
+        t = 0
+
+        return t
+
+    def upper_surface(self, x):
+        """
+        Returns the position of the upper surface.
+        """
+
+        if x < 0 or x > 1:
+            msg = 'Argument x should be within [0, 1]'
+            raise ValueError(msg)
+
+        xu = x
+        yu = 0
+
+        return xu, yu
+
+    def lower_surface(self, x):
+        """
+        Returns the position of the lower surface.
+        """
+
+        if x < 0 or x > 1:
+            msg = 'Argument x should be within [0, 1]'
+            raise ValueError(msg)
+
+        xl = x
+        yl = 0
+
+        return xl, yl
+
+
 class NACA4(object):
     """
     4-digit NACA airfoils generator. Calculates the camber line,
