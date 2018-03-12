@@ -1,9 +1,11 @@
 """
-    This example shows the use of the NACA4 airfoil series
-    class by calculating and displaying the values for upper
-    and lower surfaces, camber, camber gradient and thickness
-    for the following airfoils:
+    This example shows the use of the airfoil classes
+    lib to create and plot profiles by calculating and
+    displaying the values for upper and lower surfaces,
+    camber, camber gradient and thickness for the
+    following cases:
 
+        - a flat plate
         - NACA 0010
         - NACA 2412
         - NACA 4424
@@ -15,18 +17,35 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pyvlm.airfoils import NACA4
+from pyvlm.airfoils import (flat_plate, NACA4)
+
+# Plotting a flat plate
+airfoil = flat_plate()
+
+n = 10
+X, Y = np.zeros(n), np.zeros(n)
+
+for beta, i in zip(np.linspace(0, 2*np.pi, n), range(0, n)):
+    x = 0.5 * (1 - np.cos(beta))  # cosine spacing
+
+    if beta > 0 and beta < np.pi:
+        X[i], Y[i] = airfoil.upper_surface(x)
+    else:
+        X[i], Y[i] = airfoil.lower_surface(x)
+
+plt.style.use('ggplot')
+plt.figure(1)
+plt.title('Airfoil')
+plt.xlim(0, 1), plt.ylim(-.5, .5)
+plt.plot(X, Y, '-', label='flat plate')
+plt.legend(shadow=True)
 
 
-# Data is entered by lists storing the 4 digits that
-# define the airfoil specs
+# Plotting of the NACA4 airfoil profiles
+# Data stored in lists with the defining 4 digits
 M = [0, 2, 4]
 P = [0, 4, 4]
 T = [10, 12, 24]
-
-
-# Plotting of AIRFOIL profile
-plt.style.use('ggplot')
 
 for m, p, t in zip(M, P, T):
     airfoil = NACA4(m, p, t)
@@ -42,10 +61,7 @@ for m, p, t in zip(M, P, T):
         else:
             X[i], Y[i] = airfoil.lower_surface(x)
 
-    plt.figure(1)
-    plt.title('Airfoil')
     name = 'naca' + str(m) + str(p) + str(t)
-    plt.xlim(0, 1), plt.ylim(-.5, .5)
     plt.plot(X, Y, '-', label=name)
     plt.legend(shadow=True)
 
