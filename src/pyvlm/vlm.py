@@ -24,6 +24,14 @@ class PyVLM(object):
 
         self.rho = 1.225
 
+    def reset(self):
+        self.Points = []
+        self.Panels = []
+        self.AIC = 0
+        self.alpha = []
+        self.CL = []
+        self.CD = []
+
     def add_wing(self, lead_edge_coord, chord_lengths, n, m):
         """
         Allows the addition of a wing to the mesh, defined by its chords'
@@ -218,8 +226,8 @@ class PyVLM(object):
                 for j in range(N):
                     panel = Panel[j]
                     Wn, Wi = panel.induced_velocity(CP)
-                    AIC[i, j] = Wn  # induced velocity (normal) by horshoe vortices
-                    Wi_ += Wi  # induced velocity (normal) by trailing vortices
+                    AIC[i, j] = Wn  # induced normal velocity by horshoe vortices
+                    Wi_ += Wi  # induced normal velocity by trailing vortices
 
                 Panel[i].accul_trail_ind_vel = Wi_
                 Panel[i].alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
@@ -253,9 +261,14 @@ class PyVLM(object):
             Panel[i].gamma = gamma[i]
             Panel[i].l = V * rho * Panel[i].gamma * Panel[i].span
             Panel[i].cl = Panel[i].l / (q_inf * Panel[i].area)
+             
+            d0 = (Panel[i].l * Panel[i].accul_trail_ind_vel) / V
+            d1 = -rho * abs(Panel[i].gamma) * Panel[i].span * (Panel[i].accul_trail_ind_vel)
+            d2 = Panel[i].l * np.sin(Panel[i].alpha_ind)
 
-            Panel[i].d = V * rho * abs(Panel[i].gamma) * Panel[i].span * \
-                         abs(Panel[i].accul_trail_ind_vel)  # TODO: check
+            print("%8.3f % 8.3f %8.3f" % (d0, d1, d2))
+
+            Panel[i].d = d1
             Panel[i].cd = Panel[i].d / (q_inf * Panel[i].area)
 
             L += Panel[i].l
