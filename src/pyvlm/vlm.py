@@ -266,7 +266,7 @@ class PyVLM(object):
             d1 = -rho * abs(Panel[i].gamma) * Panel[i].span * (Panel[i].accul_trail_ind_vel)
             d2 = Panel[i].l * np.sin(Panel[i].alpha_ind)
 
-            print("%8.3f % 8.3f %8.3f" % (d0, d1, d2))
+            #print("%8.3f % 8.3f %8.3f" % (d0, d1, d2))
 
             Panel[i].d = d1
             Panel[i].cd = Panel[i].d / (q_inf * Panel[i].area)
