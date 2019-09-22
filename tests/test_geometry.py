@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from pyvlm.geometry import (cross_prod, vect_dot, norm_dir_vect,
+from vlmpy.geometry import (cross_prod, vect_dot, norm_dir_vect,
                             dist_point2line, area_4points)
 
 

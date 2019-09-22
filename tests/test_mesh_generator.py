@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from pyvlm.mesh_generator import Mesh
+from vlmpy.mesh_generator import Mesh
 
 
 def test_mesh_points():

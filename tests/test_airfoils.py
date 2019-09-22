@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from pyvlm.airfoils import NACA4
+from vlmpy.airfoils import NACA4
 
 
 def test_camber_line():

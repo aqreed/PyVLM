@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from pyvlm.vlm import PyVLM
+from vlmpy.vlm import PyVLM
 
 
 def test_add_wing():
@@ -43,10 +43,9 @@ def test_vlm():
     n, m = 1, 1
     test_vlm.add_wing(leading_edges_position, chord_length, n, m)
 
-    V = 140.0
     alpha = np.deg2rad(0)
 
-    test_vlm.vlm(V, alpha, False)
+    test_vlm.vlm(alpha, False)
 
     calculated_AIC = test_vlm.AIC
     expected_AIC = np.array([[-0.768468, 0.1634183],
