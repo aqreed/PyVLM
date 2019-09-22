@@ -1,15 +1,30 @@
-__pycache__
-.cache
-.idea
-build
-dist
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-*.py[cod~]
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.cache/
+.coverage
 
-*.egg-info
-
-.spyder*
-
-examples/.ipynb_checkpoints
-examples/examples-notebook/.ipynb_checkpoints/
-issues/.ipynb_checkpoints
+# Jupyter Notebook
+.ipynb_checkpoints
