@@ -28,7 +28,7 @@ $ cd PyVLM
 $ pip install -e .
 ```
 
-Please find a example notebook on the ['examples'](https://github.com/aqreed/PyVLM/master/examples) folder that you can open locally, or just try [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/master?filepath=examples) to launch online interactive Jupyter notebooks.
+Please find a example notebook on the ['examples'](https://github.com/aqreed/PyVLM/tree/master/examples) folder that you can open locally, or just try [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/master?filepath=examples) to launch online interactive Jupyter notebooks.
 
 ---
 **NOTE**:
