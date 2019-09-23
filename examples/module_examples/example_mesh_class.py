@@ -17,7 +17,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pyvlm.mesh_generator import Mesh
+from vlm.mesh_generator import Mesh
 
 
 # GEOMETRY DEFINITION #
@@ -38,26 +38,26 @@ mesh = Mesh(leading_edges_coord, chord_lengths, n, m)
 
 Points = mesh.points()
 Panels = mesh.panels()
-Chordwise_panel_pos = mesh.panel_chord_positions()
-Panels_span = mesh.panels_span()
 
 # PRINTING AND PLOTTING
 print('\n Point |    Coordinates ')
 print('--------------------------')
 for i in range(0, len(Points)):
-    print('  %2s   |' % i, np.round(Points[i], 2))
+   print('  %2s   |' % i, np.round(Points[i], 2))
 
 print('\n Panel | Chrd % |  Span  |   Points coordinates')
 print('----------------------------------------------------------------------')
 for i in range(0, len(Panels)):
-    print('  %3s  |  %4.1f  | %6.2f | '
-          % (i, 100*Chordwise_panel_pos[i], Panels_span[i]),
-          np.round(Panels[i][0], 2), np.round(Panels[i][1], 2),
-          np.round(Panels[i][2], 2), np.round(Panels[i][3], 2))
+   print('  %3s  |  %4.1f  | %6.2f | '
+         % (i, 100*Panels[i].chordwise_position,  Panels[i].span),
+            np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
+            np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
 
 plt.style.use('ggplot')
 plt.xlim(0, c), plt.ylim(0, b)
+
 for i in range(0, len(Points)):
-    P = Points[i]
-    plt.plot(P[0], P[1], 'ro')
+   P = Points[i]
+   plt.plot(P[0], P[1], 'ro')
+
 plt.show()
