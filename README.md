@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.com/aqreed/PyVLM.svg?branch=dev)](https://travis-ci.com/aqreed/PyVLM)
-[![codecov.io](https://codecov.io/gh/aqreed/PyVLM/branch/dev/graph/badge.svg)](https://codecov.io/gh/aqreed/PyVLM/branch/dev)
+[![Build Status](https://travis-ci.com/aqreed/PyVLM.svg?branch=master)](https://travis-ci.com/aqreed/PyVLM)
+[![codecov.io](https://codecov.io/gh/aqreed/PyVLM/branch/master/graph/badge.svg)](https://codecov.io/gh/aqreed/PyVLM/branch/master)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/aqreed/PyVLM/raw/master/COPYING)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/dev?filepath=examples)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/master?filepath=examples)
 
 # PyVLM
 |  |  |
@@ -28,7 +28,7 @@ $ cd PyVLM
 $ pip install -e .
 ```
 
-Please find a example notebook on the ['examples'](https://github.com/aqreed/PyVLM/tree/dev/examples) folder that you can open locally, or just try [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/dev?filepath=examples) to launch online interactive Jupyter notebooks.
+Please find a example notebook on the ['examples'](https://github.com/aqreed/PyVLM/master/examples) folder that you can open locally, or just try [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/master?filepath=examples) to launch online interactive Jupyter notebooks.
 
 ---
 **NOTE**:
