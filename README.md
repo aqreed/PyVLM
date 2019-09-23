@@ -14,7 +14,13 @@
 
 ### Installation
 
-PyVLM has been written in Python3. To install in development mode:
+PyVLM has been written in Python3, and its version v0.1.1 is available in PyPi. It can be installed using:
+
+```
+$ pip install vlm
+```
+
+To install in development mode:
 
 ```sh
 $ git clone https://github.com/aqreed/PyVLM.git
