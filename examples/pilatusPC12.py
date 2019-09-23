@@ -18,7 +18,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pyvlm.vlm import PyVLM
+from vlm import PyVLM
 
 
 pilatusPC12 = PyVLM()

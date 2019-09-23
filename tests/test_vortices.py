@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from vlmpy.vortices import (vortex_position_in_panel,
+from vlm.vortices import (vortex_position_in_panel,
                             v_induced_by_horseshoe_vortex,
                             v_induced_by_finite_vortex_line)
 
