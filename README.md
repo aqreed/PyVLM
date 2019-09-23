@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.com/aqreed/PyVLM.svg?branch=dev)](https://travis-ci.com/aqreed/PyVLM)
+[![codecov.io](https://codecov.io/gh/aqreed/PyVLM/branch/dev/graph/badge.svg)](https://codecov.io/gh/aqreed/PyVLM/branch/dev)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/aqreed/PyVLM/raw/master/COPYING)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/dev?filepath=examples)
+
 # PyVLM
 |  |  |
 | ------ | ------ |
