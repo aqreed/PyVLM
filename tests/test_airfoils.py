@@ -94,6 +94,11 @@ class test_NACA4(ut.TestCase):
         expected_value = -0.0111111
         assert_almost_equal(calculated_value, expected_value, 6)
 
+        x = 0.3
+        calculated_value = airfoil.camber_gradient(x)
+        expected_value = 0.025
+        assert_almost_equal(calculated_value, expected_value, 6)
+
     def test_thickness(self):
         airfoil = NACA4()
         x = 0.5
@@ -119,6 +124,13 @@ class test_NACA4(ut.TestCase):
         assert_almost_equal(calculated_value, expected_value, 6)
 
     def test_flat_plate_exceptiona(self):
+        self.assertRaises(ValueError, NACA4, -1, 4, 12)
+        self.assertRaises(ValueError, NACA4, 9.6, 4, 12)
+        self.assertRaises(ValueError, NACA4, 2, -1, 12)
+        self.assertRaises(ValueError, NACA4, 2, 9.1, 12)
+        self.assertRaises(ValueError, NACA4, 2, 4, -1)
+        self.assertRaises(ValueError, NACA4, 2, 4, 41)
+
         airfoil = NACA4()
         self.assertRaises(ValueError, airfoil.camber_line, 1.1)
         self.assertRaises(ValueError, airfoil.camber_line, -0.1)
