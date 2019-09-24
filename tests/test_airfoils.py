@@ -4,57 +4,129 @@
 """
 
 import pytest
+import unittest as ut
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from vlm.airfoils import NACA4
+from vlm.airfoils import flat_plate, NACA4
 
 
-def test_camber_line():
-    airfoil = NACA4()
-    x = 0.5
+class test_flat_plate(ut.TestCase):
+    """
+    Tests for the flat plate airfoil class
+    """
+    def test_camber_line(self):
+        airfoil = flat_plate()
+        x = 0.1
 
-    calculated_camber_line = airfoil.camber_line(x)
-    expected_camber_line = 0.0194444
+        calculated_value = airfoil.camber_line(x)
+        expected_value = 0.0
+        assert_almost_equal(calculated_value, expected_value, 6)
 
-    assert_almost_equal(calculated_camber_line, expected_camber_line)
+    def test_camber_gradient(self):
+        airfoil = flat_plate()
+        x = 0.76
+
+        calculated_value = airfoil.camber_gradient(x)
+        expected_value = 0.0
+        assert_almost_equal(calculated_value, expected_value, 6)
+
+    def test_thickness(self):
+        airfoil = flat_plate()
+        x = 0.5
+
+        calculated_value = airfoil.thickness(x)
+        expected_value = 0.0
+        assert_almost_equal(calculated_value, expected_value, 6)
+
+    def test_upper_surface(self):
+        airfoil = flat_plate()
+        x = 0.34
+
+        calculated_value = airfoil.upper_surface(x)
+        expected_value = x, 0.0
+        assert_almost_equal(calculated_value, expected_value, 6)
+
+    def test_lower_surface(self):
+        airfoil = flat_plate()
+        x = 0.34
+
+        calculated_value = airfoil.lower_surface(x)
+        expected_value = x, 0.0
+        assert_almost_equal(calculated_value, expected_value, 6)
+
+    def test_flat_plate_exceptiona(self):
+        airfoil = flat_plate()
+        self.assertRaises(ValueError, airfoil.camber_line, 1.1)
+        self.assertRaises(ValueError, airfoil.camber_line, -0.1)
+        self.assertRaises(ValueError, airfoil.camber_gradient, 1.1)
+        self.assertRaises(ValueError, airfoil.camber_gradient, -0.1)
+        self.assertRaises(ValueError, airfoil.thickness, 1.1)
+        self.assertRaises(ValueError, airfoil.thickness, -0.1)
+        self.assertRaises(ValueError, airfoil.upper_surface, 1.1)
+        self.assertRaises(ValueError, airfoil.upper_surface, -0.1)
+        self.assertRaises(ValueError, airfoil.lower_surface, 1.1)
+        self.assertRaises(ValueError, airfoil.lower_surface, -0.1)
 
 
-def test_camber_gradient():
-    airfoil = NACA4()
-    x = 0.5
+class test_NACA4(ut.TestCase):
+    """
+    Tests for the NACA4 airfoil class
+    """
+    def test_camber_line(self):
+        airfoil = NACA4()
 
-    calculated_camber_grad = airfoil.camber_gradient(x)
-    expected_camber_grad = -0.0111111
+        x = 0.5
+        calculated_value = airfoil.camber_line(x)
+        expected_value = 0.0194444
+        assert_almost_equal(calculated_value, expected_value, 6)
 
-    assert_almost_equal(calculated_camber_grad, expected_camber_grad)
+        x = 0.3
+        calculated_value = airfoil.camber_line(x)
+        expected_value = 0.01875
+        assert_almost_equal(calculated_value, expected_value, 6)
 
+    def test_camber_gradient(self):
+        airfoil = NACA4()
+        x = 0.5
 
-def test_thickness():
-    airfoil = NACA4()
-    x = 0.5
+        calculated_value = airfoil.camber_gradient(x)
+        expected_value = -0.0111111
+        assert_almost_equal(calculated_value, expected_value, 6)
 
-    calculated_thickness = airfoil.thickness(x)
-    expected_thickness = 0.052940252
+    def test_thickness(self):
+        airfoil = NACA4()
+        x = 0.5
 
-    assert_almost_equal(calculated_thickness, expected_thickness)
+        calculated_value = airfoil.thickness(x)
+        expected_value = 0.052940252
+        assert_almost_equal(calculated_value, expected_value, 6)
 
+    def test_upper_surface(self):
+        airfoil = NACA4()
+        x = 0.5
 
-def test_upper_surface():
-    airfoil = NACA4()
-    x = 0.5
+        calculated_value = airfoil.upper_surface(x)
+        expected_value = 0.500588188, 0.07238143
+        assert_almost_equal(calculated_value, expected_value, 6)
 
-    calculated_upper = airfoil.upper_surface(x)
-    expected_upper = 0.500588188, 0.07238143
+    def test_lower_surface(self):
+        airfoil = NACA4()
+        x = 0.5
 
-    assert_almost_equal(calculated_upper, expected_upper)
+        calculated_value = airfoil.lower_surface(x)
+        expected_value = 0.499411811, -0.033492539
+        assert_almost_equal(calculated_value, expected_value, 6)
 
-
-def test_lower_surface():
-    airfoil = NACA4()
-    x = 0.5
-
-    calculated_lower = airfoil.lower_surface(x)
-    expected_lower = 0.499411811, -0.033492539
-
-    assert_almost_equal(calculated_lower, expected_lower)
+    def test_flat_plate_exceptiona(self):
+        airfoil = NACA4()
+        self.assertRaises(ValueError, airfoil.camber_line, 1.1)
+        self.assertRaises(ValueError, airfoil.camber_line, -0.1)
+        self.assertRaises(ValueError, airfoil.camber_gradient, 1.1)
+        self.assertRaises(ValueError, airfoil.camber_gradient, -0.1)
+        self.assertRaises(ValueError, airfoil.thickness, 1.1)
+        self.assertRaises(ValueError, airfoil.thickness, -0.1)
+        self.assertRaises(ValueError, airfoil.upper_surface, 1.1)
+        self.assertRaises(ValueError, airfoil.upper_surface, -0.1)
+        self.assertRaises(ValueError, airfoil.lower_surface, 1.1)
+        self.assertRaises(ValueError, airfoil.lower_surface, -0.1)
