@@ -1,54 +1,93 @@
 """
-    Unit tests of the Mesh class and its methods
+    Unit tests of the PyVLM class and its methods
 
 """
 
 import pytest
+import unittest as ut
 import numpy as np
 from numpy.testing import assert_almost_equal
 
-from vlm.vlm import PyVLM
+from vlm import PyVLM
 
 
-def test_add_wing():
-    test_wing = PyVLM()
+class test_PyVLM(ut.TestCase):
+    """
+    Tests for the PyVLM class
+    """
+    def test_add_wing(self):
+        plane = PyVLM()
 
-    A = np.array([0, 0])
-    B = np.array([0, 1])
+        A = np.array([0, 0])
+        B = np.array([0, 1])
+        leading_edges_position = [A, B]
+        chord_length = [1, 1]
+        n, m = 1, 2
+        plane.add_wing(leading_edges_position, chord_length, n, m)
 
-    leading_edges_position = [A, B]
-    chord_length = [1, 1]
+        calculated_points = plane.Points
+        expected_points = [np.array([0, 0]), np.array([0, .5]),
+                           np.array([0, 1]), np.array([1, 0]),
+                           np.array([1, .5]), np.array([1, 1]),
+                           np.array([0, -1]), np.array([0, -.5]),
+                           np.array([0, 0]), np.array([1, -1]),
+                           np.array([1, -.5]), np.array([1, 0])]
+        plane.reset()
+        assert_almost_equal(calculated_points, expected_points)
 
-    n, m = 1, 2
-    test_wing.add_wing(leading_edges_position, chord_length, n, m)
+    def test_add_wing_exceptions(self):
+        plane = PyVLM()
+        le_pos = [np.array([0, 0])]
+        chrd_len = [1, 1]
+        n, m = 3, 4
+        self.assertRaises(ValueError, plane.add_wing, le_pos, chrd_len, n, m)
 
-    calculated_points = test_wing.Points
-    expected_points = [np.array([0, 0]), np.array([0, .5]), np.array([0, 1]),
-                       np.array([1, 0]), np.array([1, .5]), np.array([1, 1]),
-                       np.array([0, -1]), np.array([0, -.5]), np.array([0, 0]),
-                       np.array([1, -1]), np.array([1, -.5]), np.array([1, 0])]
+        plane = PyVLM()
+        A = np.array([0, 0])
+        B = np.array([0, 1])
+        C = np.array([0, 1])
+        le_pos = [A, B, C]
+        chrd_len = [1, 1, 1]
+        self.assertRaises(ValueError, plane.add_wing, le_pos, chrd_len, n, m)
 
-    assert_almost_equal(calculated_points, expected_points)
+    def test_show_mesh(self):
+        plane = PyVLM()
+        A = np.array([0, 0])
+        B = np.array([0, 1])
+        le_pos = [A, B]
+        chrd_len = [1, 1]
+        n, m = 2, 2
+        plane.add_wing(le_pos, chrd_len, n, m)
+        plane.show_mesh(print_mesh=True, plot_mesh=True)
 
+    def test_vlm(self):
+        plane = PyVLM()
 
-def test_vlm():
-    test_vlm = PyVLM()
+        A = np.array([0, 0])
+        B = np.array([0, 1])
+        leading_edges_position = [A, B]
+        chord_length = [1, 1]
+        n, m = 1, 1
+        plane.add_wing(leading_edges_position, chord_length, n, m)
 
-    A = np.array([0, 0])
-    B = np.array([0, 1])
+        alpha = np.deg2rad(0)
+        plane.vlm(alpha, True)
+        calculated_AIC = plane.AIC
+        expected_AIC = np.array([[-0.768468, 0.1634183],
+                                 [0.1634183, -0.768468]])
 
-    leading_edges_position = [A, B]
-    chord_length = [1, 1]
+        assert_almost_equal(calculated_AIC, expected_AIC)
 
-    n, m = 1, 1
-    test_vlm.add_wing(leading_edges_position, chord_length, n, m)
+    def test_aerodyn_forces_coeff(self):
+        plane = PyVLM()
 
-    alpha = np.deg2rad(0)
-
-    test_vlm.vlm(alpha, False)
-
-    calculated_AIC = test_vlm.AIC
-    expected_AIC = np.array([[-0.768468, 0.1634183],
-                             [0.1634183, -0.768468]])
-
-    assert_almost_equal(calculated_AIC, expected_AIC)
+        A = np.array([0, 0])
+        B = np.array([0, 1])
+        leading_edges_position = [A, B]
+        chord_length = [1, 1]
+        n, m = 1, 1
+        alpha = 0
+        plane.add_wing(leading_edges_position, chord_length, n, m)
+        plane.vlm(alpha, True)
+        plane.aerodyn_forces_coeff()
+        # TODO: improve this test with real-life values
