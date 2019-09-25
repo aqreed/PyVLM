@@ -8,8 +8,8 @@ from .airfoils import NACA4
 
 class PyVLM(object):
     """
-    Given a geometry, mesh chordwise and spanwise densities, angle of
-    attack, upstream velocity, applies the VLM theory to the
+    Given a geometry, mesh chordwise and spanwise densities, angle
+    of attack, upstream velocity, applies the VLM theory to the
     defined lifting surface.
     """
 
@@ -43,27 +43,34 @@ class PyVLM(object):
         Parameters
         ----------
         lead_edge_coord : list (containing arrays)
-                          Coordinates of the leading edge points
-                          as arrays in a 2D euclidean space
+            Coordinates of the leading edge points
+            as arrays in a 2D euclidean space
         chord_lengths : list
-                        Chord lenghts corresponding to the sections
-                        defined by the leading edge coordinates
+            Chord lenghts corresponding to the sections
+            defined by the leading edge coordinates
         n, m : integer
-               n - nº of chordwise panels
-               m - nº of spanwise panels
+            n - nº of chordwise panels
+            m - nº of spanwise panels
         """
-
         self.AIC = 0  # clears AIC when modifying the mesh
 
         if len(lead_edge_coord) != len(chord_lengths):
             msg = 'Same number of chords and leading edges required'
             raise ValueError(msg)
 
+        for le in lead_edge_coord:
+            count = 1
+            for le_ in lead_edge_coord:
+                if np.array_equal(le, le_):
+                    count += 1
+                    if(count > 2):
+                        msg = "Two leading edge coordinates coincide"
+                        raise ValueError(msg)
+
         # MESH GENERATION
         # When more than two chords -with their respectives leading
         # edges coordinates- are provided, it iterates through the
         # lists containing both location and length.
-
         Nle = len(lead_edge_coord)
 
         for k in range(Nle - 1):
@@ -104,7 +111,7 @@ class PyVLM(object):
             self.Points.extend(Points_)
             self.Panels.extend(Panels_)
 
-    def check_mesh(self, print_mesh=False, plot_mesh=False):
+    def show_mesh(self, print_mesh=False, plot_mesh=False):
         """
         Prints the points of the mesh, the disposition of each panel and
         plots them for visual check.
@@ -115,59 +122,24 @@ class PyVLM(object):
         plot_mesh : boolean
             Self-explained
         """
-
         Points = self.Points
-        Panels = self.Panels
-
-        # Check for coincident points
-        N = len(Points)
-        for i in range(N):
-            count = 0
-            for j in range(N):
-                if(((Points[j] == Points[i]).all()) is True):
-                    count += 1
-                    if(count > 1):
-                        msg = "Two points of the mesh coincide"
-                        raise ValueError(msg)
-
-        # Check for incorrectly defined panels
-        N = len(Panels)
-        for i in range(N):
-            P1P2 = Panels[i].P2 - Panels[i].P1
-            P1P3 = Panels[i].P3 - Panels[i].P1
-            P1P4 = Panels[i].P4 - Panels[i].P1
-            P3P4 = Panels[i].P4 - Panels[i].P3
-
-            i_inf = np.array([1, 0])
-
-            if np.cross(P1P2, i_inf) != 0:
-                msg = 'P1P2 segment not aligned with OX'
-                raise ValueError(msg)
-
-            if np.cross(P1P2, P3P4) != 0:
-                msg = 'Panel incorrectly defined, P1P2 and P3P4 not parallel'
-                raise ValueError(msg)
-
-            if np.sign(np.cross(P1P2, P1P3)) != np.sign(np.cross(P1P3, P1P4)):
-                msg = 'Points not in a clockwise/counterclockwise fashion'
-                raise ValueError(msg)
 
         # PRINTING AND PLOTTING
         if (print_mesh is True):
             print('\nPanel| Chrd% |  Span |  Points coordinates')
-            print('------------------------------------------------')
-            for i in range(N):
-                print(' %3s | %5.2f | %5.3f | '
-                      % (i, 100*Panels[i].chordwise_position, Panels[i].span),
-                      np.round(Panels[i].P1, 2), np.round(Panels[i].P2, 2),
-                      np.round(Panels[i].P3, 2), np.round(Panels[i].P4, 2))
+            print('------------------------------------------')
+            i = 1
+            for panel in self.Panels:
+                print(' %3s | %5.2f | %5.2f | '
+                      % (i, 100*panel.chordwise_position, panel.span),
+                         np.round(panel.P1, 2), np.round(panel.P2, 2),
+                         np.round(panel.P3, 2), np.round(panel.P4, 2))
+                i += 1
 
         if (plot_mesh is True):
             plt.style.use('ggplot')
-            plt.xlim(-5, 15), plt.ylim(-10, 10)
-            for i in range(len(Points)):
-                P = Points[i]
-                plt.plot(P[0], P[1], 'ro')
+            for point in Points:
+                plt.plot(point[0], point[1], 'ro')
             plt.show()
 
     def vlm(self, alpha, print_output=False):
@@ -188,7 +160,6 @@ class PyVLM(object):
         print_output : boolean
             Prints the calculation output
         """
-
         Panel = self.Panels
         rho = self.rho
         alpha = np.deg2rad(alpha)
@@ -209,7 +180,6 @@ class PyVLM(object):
         #     - also the induced velocity by *only* the trailing vortices
         #        "Wi" on panel i is calculated and stored in the Panel object
         #       attribute "accul_trail_induced_vel"
-
         N = len(Panel)
 
         if (type(self.AIC) == int):
@@ -237,7 +207,6 @@ class PyVLM(object):
         #   (b) UPSTREAM NORMAL VELOCITY
         #     It will depend on the angle of attack -"alpha"- and the camber
         #     gradient at each panel' position within the local chord
-
         Vinf_n = np.zeros(N)  # upstream (normal) velocity
 
         airfoil = NACA4()
