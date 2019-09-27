@@ -32,12 +32,12 @@ class PyVLM(object):
         self.CL = []
         self.CD = []
 
-    def add_wing(self, lead_edge_coord, chord_lengths, n, m):
+    def add_surface(self, lead_edge_coord, chord_lengths, n, m):
         """
-        Allows the addition of a wing to the mesh, defined by its chords'
+        Allows the addition of a surface to the mesh, defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
         density of the mesh can be controlled through n and m.
-        ONLY half a wing is needed to define it. A specular image will
+        ONLY half a surface is needed to define it. A specular image will
         be used to create the other half.
 
         Parameters
@@ -51,6 +51,8 @@ class PyVLM(object):
         n, m : integer
             n - nº of chordwise panels
             m - nº of spanwise panels
+
+        TODO: add angle of incidence for each surface
         """
         self.AIC = 0  # clears AIC when modifying the mesh
 
@@ -93,7 +95,7 @@ class PyVLM(object):
             self.Points.extend(Points_)
             self.Panels.extend(Panels_)
 
-        # Specular image to generate the opposite semi-span of the wing
+        # Specular image to generate the opposite semi-span of the surface
         lead_edge_coord_ = lead_edge_coord[::-1]
         chord_lengths_ = chord_lengths[::-1]
 
@@ -156,7 +158,7 @@ class PyVLM(object):
         Parameters
         ----------
         alpha : float
-            Angle of attack of the wing(degrees)
+            Angle of attack of the airplane(degrees)
         print_output : boolean
             Prints the calculation output
         """
