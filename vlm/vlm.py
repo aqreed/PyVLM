@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from .panel import Panel
 from .mesh_generator import Mesh
-from .airfoils import NACA4
+from .airfoils import NACA4, flat_plate
 
 
 class PyVLM(object):
@@ -31,7 +31,8 @@ class PyVLM(object):
         self.CL = []
         self.CD = []
 
-    def add_surface(self, le_coords, ch_lens, n, m, mirror=True):
+    def add_surface(self, le_coords, ch_lens, n, m,
+                    mirror=True, airfoil=NACA4()):
         """
         Allows the addition of a surface to the mesh, defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
@@ -52,7 +53,7 @@ class PyVLM(object):
         mirror : boolean
             if True generates a specular surface, taking plane OXZ as reference
         airfoil : object
-            defines the airfoil of the surface
+            airfoil of the surface
 
         TODO: add angle of incidence for each surface (twist distribution)
         """
@@ -84,7 +85,7 @@ class PyVLM(object):
             # The mesh is created taking into account the desired
             # mesh density spanwise -"n"- and chordwise -"m"-
 
-            mesh = Mesh(leading_edges, chords, n, m)
+            mesh = Mesh(leading_edges, chords, n, m, airfoil)
 
             # The points of the mesh and its panels - sets of 4 points
             # orderly arranged - are calculated
@@ -105,7 +106,7 @@ class PyVLM(object):
                                  le_coords_[k + 1] * [1, -1]]
                 chords = [ch_lens_[k], ch_lens_[k + 1]]
 
-                mesh = Mesh(leading_edges, chords, n, m)
+                mesh = Mesh(leading_edges, chords, n, m, airfoil)
 
                 points_ = mesh.points()
                 panels_ = mesh.panels()
@@ -203,13 +204,11 @@ class PyVLM(object):
 
         #   (b) UPSTREAM NORMAL VELOCITY
         #     It will depend on the angle of attack -"alpha"- and the camber
-        #     gradient at each panel' position within the local chord
+        #     local slope (at each panel' position within the local chord)
         Vinf_n = np.zeros(N)  # upstream (normal) velocity
 
-        airfoil = NACA4()
         for panel, i in zip(panels, range(N)):
-            position = panel.chordwise_position
-            panel.Vinf_n = -V * (alpha - airfoil.camber_gradient(position))
+            panel.Vinf_n = -V * (alpha - panel.loc_slope)
             Vinf_n[i] = panel.Vinf_n
 
         # 2. CIRCULATION (Γ or gamma)

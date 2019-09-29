@@ -98,7 +98,7 @@ class test_PyVLM(ut.TestCase):
 class test_BertinSmith(ut.TestCase):
     """
     Tests for the PyVLM class based on example 7.2 from Bertin, J.J. and
-    Smith, M.L.,"Aerodynamics for Engineers", 1998
+    Smith, M.L.,"Aerodynamics for Engineers" (1998) with b = 1
     """
     def test_add_surface(self):
         plane = PyVLM()

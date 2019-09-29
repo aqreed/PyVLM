@@ -1,6 +1,7 @@
 import numpy as np
 
 from .panel import Panel
+from .airfoils import flat_plate
 
 
 class Mesh(object):
@@ -34,6 +35,8 @@ chord1|   |
     n, m : integer
            n - nº of chordwise panels
            m - nº of spanwise panels
+    airfoil : object
+        airfoil of the surface
 
     Returns
     -------
@@ -43,11 +46,12 @@ chord1|   |
                   Mesh panels
     """
 
-    def __init__(self, leading_edges, chords, n, m):
+    def __init__(self, leading_edges, chords, n, m, airfoil=flat_plate()):
         self.leading_edges = leading_edges
         self.chords = chords
         self.n = n
         self.m = m
+        self.airfoil = airfoil
         self.mesh_points = []
         self.mesh_panels = []
 
@@ -57,7 +61,6 @@ chord1|   |
         points (x, y) coordinates (arrays), for each trapezoid geometry
         defined by the arguments.
         """
-
         Pi = self.leading_edges[0]
         Pf = self.leading_edges[1]
 
@@ -84,7 +87,6 @@ chord1|   |
         defined by 4 points previously calculated. The points are properly
         arranged to serve as locations for the horseshoe vortices.
         """
-
         Pi = self.leading_edges[0]
         chord_1 = np.array([self.chords[0], 0])
 
@@ -104,7 +106,7 @@ chord1|   |
 
             self.mesh_panels.append(Panel(P1, P2, P3, P4))
 
-            # Chordwise position calculation
+            # Chordwise position calculation (percentage of chord)
             P1_ = self.mesh_panels[k * m].P1
             P2_ = self.mesh_panels[k * m].P2
 
@@ -112,8 +114,11 @@ chord1|   |
             panel_center = P2_ + chord / 2
 
             leadEdge_2_panel = np.linalg.norm(panel_center - Pi)
-            relative_pos = leadEdge_2_panel / np.linalg.norm(chord_1)
+            chrd_pc = leadEdge_2_panel / np.linalg.norm(chord_1)
 
-            self.mesh_panels[i].chordwise_position = relative_pos
+            self.mesh_panels[i].chordwise_position = chrd_pc
+
+            # Set local camber slope
+            self.mesh_panels[i].loc_slope = self.airfoil.camber_slope(chrd_pc)
 
         return self.mesh_panels

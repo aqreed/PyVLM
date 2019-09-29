@@ -31,6 +31,7 @@ class Panel(object):
         self.area = area_4points(P1, P2, P3, P4)
         self.span = abs(P3[1] - P2[1])
         self.chordwise_position = 0  # position w.r.t. the local chord
+        self.loc_slope = 0  # local mean camber slope
 
         self.accul_trail_ind_vel = 0  # induced vel. by trailing vortices
         self.alpha_ind = 0  # induced angle of attack
