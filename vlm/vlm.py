@@ -31,7 +31,7 @@ class PyVLM(object):
         self.CL = []
         self.CD = []
 
-    def add_surface(self, lead_edge_coord, chord_lengths, n, m):
+    def add_surface(self, lead_edge_coord, chord_lengths, n, m, mirror=True):
         """
         Allows the addition of a surface to the mesh, defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
@@ -50,8 +50,10 @@ class PyVLM(object):
         n, m : integer
             n - nº of chordwise panels
             m - nº of spanwise panels
+        mirror : boolean
+            if True generates a specular surface, taking plane OXZ as reference
 
-        TODO: add angle of incidence for each surface
+        TODO: add angle of incidence for each surface (twist distribution)
         """
         self.AIC = 0  # clears AIC when modifying the mesh
 
@@ -98,19 +100,20 @@ class PyVLM(object):
         lead_edge_coord_ = lead_edge_coord[::-1]
         chord_lengths_ = chord_lengths[::-1]
 
-        for k in range(Nle - 1):
-            leading_edges = [lead_edge_coord_[k]*[1, -1],
-                             lead_edge_coord_[k + 1]*[1, -1]]
-            chords = [chord_lengths_[k],
-                      chord_lengths_[k + 1]]
+        if mirror:
+            for k in range(Nle - 1):
+                leading_edges = [lead_edge_coord_[k]*[1, -1],
+                                 lead_edge_coord_[k + 1]*[1, -1]]
+                chords = [chord_lengths_[k],
+                          chord_lengths_[k + 1]]
 
-            mesh = Mesh(leading_edges, chords, n, m)
+                mesh = Mesh(leading_edges, chords, n, m)
 
-            points_ = mesh.points()
-            panels_ = mesh.panels()
+                points_ = mesh.points()
+                panels_ = mesh.panels()
 
-            self.Points.extend(points_)
-            self.Panels.extend(panels_)
+                self.Points.extend(points_)
+                self.Panels.extend(panels_)
 
     def show_mesh(self, print_mesh=False, plot_mesh=False):
         """
@@ -127,16 +130,16 @@ class PyVLM(object):
         panels = self.Panels
 
         # PRINTING AND PLOTTING
-        if (print_mesh is True):
+        if print_mesh:
             print('\nPanel| Chrd% |  Span |  Points coordinates')
             print('------------------------------------------')
             for panel, i in zip(panels, range(len(panels))):
-                print(' %3s | %5.2f | %5.2f | '
+                print(' %3s | %5.2f | %5.3f | '
                       % (i, 100*panel.chordwise_position, panel.span),
-                      np.round(panel.P1, 2), np.round(panel.P2, 2),
-                      np.round(panel.P3, 2), np.round(panel.P4, 2))
+                      np.round(panel.P1, 3), np.round(panel.P2, 3),
+                      np.round(panel.P3, 3), np.round(panel.P4, 3))
 
-        if (plot_mesh is True):
+        if plot_mesh:
             plt.style.use('ggplot')
             for point in points:
                 plt.plot(point[0], point[1], 'ro')
@@ -243,7 +246,7 @@ class PyVLM(object):
         CD = D / (q_inf * S)
 
         # PRINTING
-        if (print_output is True):
+        if print_output:
             print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |   cl   |   cd    |')
             print('----------------------------------------------------------')
             for panel, i in zip(panels, range(N)):
