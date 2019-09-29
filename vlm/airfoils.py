@@ -27,9 +27,9 @@ class flat_plate(object):
 
         return z
 
-    def camber_gradient(self, x):
+    def camber_slope(self, x):
         """
-        Returns the (local) camber gradient of the airfoil.
+        Returns the (local) mean camber slope of the airfoil.
         """
 
         if x < 0 or x > 1:
@@ -85,7 +85,7 @@ class flat_plate(object):
 class NACA4(object):
     """
     4-digit NACA airfoils generator. Calculates the camber line,
-    its gradient, (half) thickness distribution and the position
+    its local slope, (half) thickness distribution and the position
     of both lower and upper surfaces. Default values are set for
     the NACA 2412.
 
@@ -141,9 +141,9 @@ class NACA4(object):
 
         return z
 
-    def camber_gradient(self, x):
+    def camber_slope(self, x):
         """
-        Returns the (local) camber gradient of the airfoil.
+        Returns the (local) mean camber slope of the airfoil.
         """
 
         if x < 0 or x > 1:
@@ -188,7 +188,7 @@ class NACA4(object):
             msg = 'Argument x should be within [0, 1]'
             raise ValueError(msg)
 
-        theta = atan(self.camber_gradient(x))
+        theta = atan(self.camber_slope(x))
 
         xu = x - self.thickness(x) * sin(theta)
         yu = self.camber_line(x) + self.thickness(x) * cos(theta)
@@ -204,7 +204,7 @@ class NACA4(object):
             msg = 'Argument x should be within [0, 1]'
             raise ValueError(msg)
 
-        theta = atan(self.camber_gradient(x))
+        theta = atan(self.camber_slope(x))
 
         xl = x + self.thickness(x) * sin(theta)
         yl = self.camber_line(x) - self.thickness(x) * cos(theta)

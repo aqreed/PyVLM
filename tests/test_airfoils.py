@@ -23,11 +23,11 @@ class test_flat_plate(ut.TestCase):
         expected_value = 0.0
         assert_almost_equal(calculated_value, expected_value, 6)
 
-    def test_camber_gradient(self):
+    def test_camber_slope(self):
         airfoil = flat_plate()
         x = 0.76
 
-        calculated_value = airfoil.camber_gradient(x)
+        calculated_value = airfoil.camber_slope(x)
         expected_value = 0.0
         assert_almost_equal(calculated_value, expected_value, 6)
 
@@ -59,8 +59,8 @@ class test_flat_plate(ut.TestCase):
         airfoil = flat_plate()
         self.assertRaises(ValueError, airfoil.camber_line, 1.1)
         self.assertRaises(ValueError, airfoil.camber_line, -0.1)
-        self.assertRaises(ValueError, airfoil.camber_gradient, 1.1)
-        self.assertRaises(ValueError, airfoil.camber_gradient, -0.1)
+        self.assertRaises(ValueError, airfoil.camber_slope, 1.1)
+        self.assertRaises(ValueError, airfoil.camber_slope, -0.1)
         self.assertRaises(ValueError, airfoil.thickness, 1.1)
         self.assertRaises(ValueError, airfoil.thickness, -0.1)
         self.assertRaises(ValueError, airfoil.upper_surface, 1.1)
@@ -86,16 +86,16 @@ class test_NACA4(ut.TestCase):
         expected_value = 0.01875
         assert_almost_equal(calculated_value, expected_value, 6)
 
-    def test_camber_gradient(self):
+    def test_camber_slope(self):
         airfoil = NACA4()
         x = 0.5
 
-        calculated_value = airfoil.camber_gradient(x)
+        calculated_value = airfoil.camber_slope(x)
         expected_value = -0.0111111
         assert_almost_equal(calculated_value, expected_value, 6)
 
         x = 0.3
-        calculated_value = airfoil.camber_gradient(x)
+        calculated_value = airfoil.camber_slope(x)
         expected_value = 0.025
         assert_almost_equal(calculated_value, expected_value, 6)
 
@@ -134,8 +134,8 @@ class test_NACA4(ut.TestCase):
         airfoil = NACA4()
         self.assertRaises(ValueError, airfoil.camber_line, 1.1)
         self.assertRaises(ValueError, airfoil.camber_line, -0.1)
-        self.assertRaises(ValueError, airfoil.camber_gradient, 1.1)
-        self.assertRaises(ValueError, airfoil.camber_gradient, -0.1)
+        self.assertRaises(ValueError, airfoil.camber_slope, 1.1)
+        self.assertRaises(ValueError, airfoil.camber_slope, -0.1)
         self.assertRaises(ValueError, airfoil.thickness, 1.1)
         self.assertRaises(ValueError, airfoil.thickness, -0.1)
         self.assertRaises(ValueError, airfoil.upper_surface, 1.1)
