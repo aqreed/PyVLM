@@ -31,7 +31,7 @@ class PyVLM(object):
         self.CL = []
         self.CD = []
 
-    def add_surface(self, lead_edge_coord, chord_lengths, n, m, mirror=True):
+    def add_surface(self, le_coords, ch_lens, n, m, mirror=True):
         """
         Allows the addition of a surface to the mesh, defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
@@ -41,29 +41,30 @@ class PyVLM(object):
 
         Parameters
         ----------
-        lead_edge_coord : list (containing arrays)
-            Coordinates of the leading edge points
-            as arrays in a 2D euclidean space
-        chord_lengths : list
-            Chord lenghts corresponding to the sections
-            defined by the leading edge coordinates
+        le_coords : list (containing arrays)
+            leading edge coordinates as arrays in a 2D euclidean space
+        ch_lens : list
+            chord lenghts corresponding to the sections defined by the
+            leading edge coordinates
         n, m : integer
             n - nº of chordwise panels
             m - nº of spanwise panels
         mirror : boolean
             if True generates a specular surface, taking plane OXZ as reference
+        airfoil : object
+            defines the airfoil of the surface
 
         TODO: add angle of incidence for each surface (twist distribution)
         """
         self.AIC = 0  # clears AIC when modifying the mesh
 
-        if len(lead_edge_coord) != len(chord_lengths):
+        if len(le_coords) != len(ch_lens):
             msg = 'Same number of chords and leading edges required'
             raise ValueError(msg)
 
-        for le in lead_edge_coord:
+        for le in le_coords:
             count = 1
-            for le_ in lead_edge_coord:
+            for le_ in le_coords:
                 if np.array_equal(le, le_):
                     count += 1
                     if(count > 2):
@@ -74,13 +75,11 @@ class PyVLM(object):
         # When more than two chords -with their respectives leading
         # edges coordinates- are provided, it iterates through the
         # lists containing both location and length.
-        Nle = len(lead_edge_coord)
+        Nle = len(le_coords)
 
         for k in range(Nle - 1):
-            leading_edges = [lead_edge_coord[k],
-                             lead_edge_coord[k + 1]]
-            chords = [chord_lengths[k],
-                      chord_lengths[k + 1]]
+            leading_edges = [le_coords[k], le_coords[k + 1]]
+            chords = [ch_lens[k], ch_lens[k + 1]]
 
             # The mesh is created taking into account the desired
             # mesh density spanwise -"n"- and chordwise -"m"-
@@ -97,15 +96,14 @@ class PyVLM(object):
             self.Panels.extend(panels_)
 
         # Specular image to generate the opposite semi-span of the surface
-        lead_edge_coord_ = lead_edge_coord[::-1]
-        chord_lengths_ = chord_lengths[::-1]
+        le_coords_ = le_coords[::-1]
+        ch_lens_ = ch_lens[::-1]
 
         if mirror:
             for k in range(Nle - 1):
-                leading_edges = [lead_edge_coord_[k]*[1, -1],
-                                 lead_edge_coord_[k + 1]*[1, -1]]
-                chords = [chord_lengths_[k],
-                          chord_lengths_[k + 1]]
+                leading_edges = [le_coords_[k] * [1, -1],
+                                 le_coords_[k + 1] * [1, -1]]
+                chords = [ch_lens_[k], ch_lens_[k + 1]]
 
                 mesh = Mesh(leading_edges, chords, n, m)
 
