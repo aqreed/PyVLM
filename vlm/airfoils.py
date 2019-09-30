@@ -1,6 +1,12 @@
 from math import cos, sin, atan
 
 
+def check_xrange(x):
+    if x < 0 or x > 1:
+        msg = 'Argument x should be within [0, 1]'
+        raise ValueError(msg)
+
+
 class flat_plate(object):
     """
     Flat plate.
@@ -18,10 +24,7 @@ class flat_plate(object):
         """
         Returns the (local) camber line of the airfoil.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         z = 0
 
@@ -31,10 +34,7 @@ class flat_plate(object):
         """
         Returns the (local) mean camber slope of the airfoil.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         dz = 0
 
@@ -44,10 +44,7 @@ class flat_plate(object):
         """
         Returns the (local) half-thickness distribution.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         t = 0
 
@@ -57,10 +54,7 @@ class flat_plate(object):
         """
         Returns the position of the upper surface.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         xu = x
         yu = 0
@@ -71,10 +65,7 @@ class flat_plate(object):
         """
         Returns the position of the lower surface.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         xl = x
         yl = 0
@@ -104,7 +95,6 @@ class NACA4(object):
              T - thickness referred to the chord (divided by 100)
                  approximately at 30% of the chord
     """
-
     def __init__(self, M=2, P=4, T=12):
         self.M = M/100
         self.P = P/10
@@ -126,10 +116,7 @@ class NACA4(object):
         """
         Returns the (local) camber line of the airfoil.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         M = self.M
         P = self.P
@@ -145,10 +132,7 @@ class NACA4(object):
         """
         Returns the (local) mean camber slope of the airfoil.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         M = self.M
         P = self.P
@@ -164,10 +148,7 @@ class NACA4(object):
         """
         Returns the (local) half-thickness distribution.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         T = self.T
 
@@ -183,10 +164,7 @@ class NACA4(object):
         """
         Returns the position of the upper surface.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         theta = atan(self.camber_slope(x))
 
@@ -199,10 +177,7 @@ class NACA4(object):
         """
         Returns the position of the lower surface.
         """
-
-        if x < 0 or x > 1:
-            msg = 'Argument x should be within [0, 1]'
-            raise ValueError(msg)
+        check_xrange(x)
 
         theta = atan(self.camber_slope(x))
 
