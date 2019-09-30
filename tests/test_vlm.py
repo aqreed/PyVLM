@@ -5,10 +5,11 @@
 
 import pytest
 import unittest as ut
-from numpy import array, deg2rad
+from numpy import array, deg2rad, pi
 from numpy.testing import assert_almost_equal
 
 from vlm import PyVLM
+from vlm.airfoils import flat_plate
 
 
 class test_PyVLM(ut.TestCase):
@@ -36,6 +37,7 @@ class test_PyVLM(ut.TestCase):
         assert_almost_equal(calculated_points, expected_points)
 
     def test_add_surface_exceptions(self):
+        # nº chords =! nº leading edge coordinates
         plane = PyVLM()
         le_pos = [array([0, 0])]
         chrd_len = [1, 1]
@@ -43,6 +45,7 @@ class test_PyVLM(ut.TestCase):
         self.assertRaises(ValueError, plane.add_surface,
                           le_pos, chrd_len, n, m)
 
+        # two leading edge coordinates are the same
         plane = PyVLM()
         A = array([0, 0])
         B = array([0, 1])
@@ -118,3 +121,36 @@ class test_BertinSmith(ut.TestCase):
                            array([0.325, 0.125]), array([0.45, 0.25]),
                            array([0.575, 0.375]), array([0.7, 0.5])]
         assert_almost_equal(calculated_points, expected_points)
+
+    def test_vlm(self):
+        plane = PyVLM()
+
+        A = array([0, 0])
+        B = array([0.5, 0.5])
+        leading_edges_position = [A, B]
+        chord_length = [.2, .2]
+        n, m = 1, 4
+        plane.add_surface(leading_edges_position, chord_length,
+                          n, m, airfoil=flat_plate())
+
+        alpha = 1  # rad
+        plane.vlm(alpha, True)
+        calculated_AIC = plane.AIC
+        expected_AIC = array([[-71.5187, 11.2933, 1.0757, 0.3775,
+                               0.2659, 0.5887, 2.0504, 18.515],
+                             [20.2174, -71.5187, 11.2933, 1.0757,
+                              0.2503, 0.4903, 1.1742, 3.6144],
+                             [3.8792, 20.2174, -71.5187, 11.2933,
+                              0.2179, 0.3776, 0.7227, 1.548],
+                             [1.6334, 3.8792,  20.2174, -71.5187,
+                              0.1836, 0.2895, 0.4834, 0.8609],
+                             [0.8609, 0.4834, 0.2895, 0.1836,
+                              -71.5187, 20.2174, 3.8792, 1.6334],
+                             [1.548, 0.7227, 0.3776, 0.2179,
+                              11.2933, -71.5187, 20.2174, 3.8792],
+                             [3.6144, 1.1742, 0.4903, 0.2503,
+                              1.0757, 11.2933, -71.5187, 20.2174],
+                             [18.515, 2.0504, 0.5887, 0.2659,
+                              0.3775, 1.0757, 11.2933, -71.5187]])
+
+        assert_almost_equal(calculated_AIC*4*pi, expected_AIC, decimal=4)
