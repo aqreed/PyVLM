@@ -258,10 +258,10 @@ class PyVLM(object):
 
         # PRINTING
         if print_output:
-            print('\nPanel|  V∞_n |   Wi   |  α_i  |   Γ   |   cl   |   cd    |')
-            print('----------------------------------------------------------')
+            print('\nPanel|   V∞_n |   Wi   |   α_i  |   Γ   |   cl   |   cd    |')
+            print('--------------------------------------------------------------')
             for panel, i in zip(panels, range(N)):
-                print(' %3s | %5.2f | %6.2f | %5.2f | %5.2f |%7.3f | %7.5f |'
+                print(' %3s | %5.3f | %6.3f | %6.3f | %5.3f |%7.3f | %7.5f |'
                       % (i, panel.Vinf_n, panel.accul_trail_ind_vel,
                          np.rad2deg(panel.alpha_ind), panel.gamma,
                          panel.cl, panel.cd))
