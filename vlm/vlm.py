@@ -2,16 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-from .panel import Panel
 from .mesh_generator import Mesh
-from .airfoils import NACA4, flat_plate
+from .airfoils import flat_plate
 
 
 class PyVLM(object):
     """
-    Given a geometry, mesh chordwise and spanwise densities, angle
-    of attack, upstream velocity, applies the VLM theory to the
-    defined lifting surface.
+    Given a geometry, mesh chordwise and spanwise densities, airfoil and
+    angle of attack, applies the VLM theory to the defined lifting surface.
     """
     def __init__(self):
         self.Points = []
@@ -33,11 +31,12 @@ class PyVLM(object):
         self.CD = []
 
     def add_surface(self, le_coords, ch_lens, n, m,
-                    mirror=True, airfoil=NACA4()):
+                    mirror=True, airfoil=flat_plate()):
         """
         Allows the addition of a surface to the mesh, defined by its chords'
         lengths and leading edges locations. The spanwise and chordwise
-        density of the mesh can be controlled through n and m.
+        density of the mesh can be controlled through n and m. The airfoil is
+        needed to calculate the local camber slope.
         ONLY half a surface is needed to define it. A specular image will
         be used to create the other half.
 
@@ -85,17 +84,12 @@ class PyVLM(object):
 
             # The mesh is created taking into account the desired
             # mesh density spanwise -"n"- and chordwise -"m"-
-
             mesh = Mesh(leading_edges, chords, n, m, airfoil)
 
             # The points of the mesh and its panels - sets of 4 points
             # orderly arranged - are calculated
-
-            points_ = mesh.points()
-            panels_ = mesh.panels()
-
-            self.Points.extend(points_)
-            self.Panels.extend(panels_)
+            self.Points.extend(mesh.points())
+            self.Panels.extend(mesh.panels())
 
         # Specular image to generate the opposite semi-span of the surface
         le_coords_ = le_coords[::-1]
@@ -109,11 +103,8 @@ class PyVLM(object):
 
                 mesh = Mesh(leading_edges, chords, n, m, airfoil)
 
-                points_ = mesh.points()
-                panels_ = mesh.panels()
-
-                self.Points.extend(points_)
-                self.Panels.extend(panels_)
+                self.Points.extend(mesh.points())
+                self.Panels.extend(mesh.panels())
 
     def show_mesh(self, print_mesh=False, plot_mesh=False):
         """

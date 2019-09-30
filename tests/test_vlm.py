@@ -9,7 +9,6 @@ from numpy import array, deg2rad, pi
 from numpy.testing import assert_almost_equal
 
 from vlm import PyVLM
-from vlm.airfoils import flat_plate
 
 
 class test_PyVLM(ut.TestCase):
@@ -130,8 +129,7 @@ class test_BertinSmith(ut.TestCase):
         leading_edges_position = [A, B]
         chord_length = [.2, .2]
         n, m = 1, 4
-        plane.add_surface(leading_edges_position, chord_length,
-                          n, m, airfoil=flat_plate())
+        plane.add_surface(leading_edges_position, chord_length, n, m)
 
         alpha = 1  # rad
         plane.vlm(alpha, True)
