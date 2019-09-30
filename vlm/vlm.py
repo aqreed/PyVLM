@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 from .panel import Panel
 from .mesh_generator import Mesh
@@ -140,8 +141,21 @@ class PyVLM(object):
 
         if plot_mesh:
             plt.style.use('ggplot')
+            colors = plt.cm.Blues(np.linspace(0, 1, len(panels) + 5))
+            plt.figure(num=None, figsize=(8, 12))
+            for p, i in zip(panels, range(len(panels))):
+                col = colors[i + 4]
+
+                x = [p.P1[0], p.P2[0], p.P3[0], p.P4[0]]
+                y = [p.P1[1], p.P2[1], p.P3[1], p.P4[1]]
+                plt.fill(x, y, c=col, alpha=0.65)
+                plt.plot(x, y, c='w', lw=2)
+
+                centre = (p.P1 + p.P3) / 2
+                plt.text(centre[0], centre[1], i, color='k', fontsize=20)
+
             for point in points:
-                plt.plot(point[0], point[1], 'ro')
+                plt.plot(point[0], point[1], 'bo')
             plt.show()
 
     def vlm(self, alpha, print_output=False):
