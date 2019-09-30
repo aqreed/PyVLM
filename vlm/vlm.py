@@ -37,8 +37,9 @@ class PyVLM(object):
         lengths and leading edges locations. The spanwise and chordwise
         density of the mesh can be controlled through n and m. The airfoil is
         needed to calculate the local camber slope.
-        ONLY half a surface is needed to define it. A specular image will
+        Only *half* a surface is needed to define it. A specular image will
         be used to create the other half.
+        It then calculates the AIC matrix (or re-calculates it).
 
         Parameters
         ----------
@@ -57,8 +58,6 @@ class PyVLM(object):
 
         TODO: add angle of incidence for each surface (twist distribution)
         """
-        self.AIC = 0  # clears AIC when modifying the mesh
-
         if len(le_coords) != len(ch_lens):
             msg = 'Same number of chords and leading edges required'
             raise ValueError(msg)
@@ -92,10 +91,9 @@ class PyVLM(object):
             self.Panels.extend(mesh.panels())
 
         # Specular image to generate the opposite semi-span of the surface
-        le_coords_ = le_coords[::-1]
-        ch_lens_ = ch_lens[::-1]
-
         if mirror:
+            le_coords_ = le_coords[::-1]
+            ch_lens_ = ch_lens[::-1]
             for k in range(Nle - 1):
                 leading_edges = [le_coords_[k] * [1, -1],
                                  le_coords_[k + 1] * [1, -1]]
@@ -105,6 +103,27 @@ class PyVLM(object):
 
                 self.Points.extend(mesh.points())
                 self.Panels.extend(mesh.panels())
+
+        # To impose the boundary condition we must calculate the normal
+        # component of the induced velocity "Wn" by horshoe vortices of
+        # strength = 1, stored in the matrix "AIC" where the element Aij is
+        # the velocity induced by the horshoe vortex in panel j on panel i.
+        # Also calculated the induced velocity by *only* the trailing
+        # vortices "Wi" on panel i, and stored in the Panel instance
+        # attribute "accul_trail_induced_vel".
+        N = len(self.Panels)
+        AIC = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
+
+        for panel_pivot, i in zip(self.Panels, range(N)):
+            Wi = 0
+            for panel, j in zip(self.Panels, range(N)):
+                Wn, Wi_ = panel.induced_velocity(panel_pivot.CP)
+                AIC[i, j] = Wn  # induced normal velocity by horshoe vortices
+                Wi += Wi_  # induced normal velocity by trailing vortices
+
+            panel_pivot.accul_trail_ind_vel = Wi
+
+        self.AIC = AIC
 
     def show_mesh(self, print_mesh=False, plot_mesh=False):
         """
@@ -175,46 +194,19 @@ class PyVLM(object):
         q_inf = (1 / 2) * rho * (V**2)
 
         # 1. BOUNDARY CONDITION
-        # To impose the boundary condition we must calculate the normal
-        # components of (a) induced velocity "Wn" by horshoe vortices of
-        # strength=1 and (b) upstream normal velocity "Vinf_n"
-
-        #   (a) INDUCED VELOCITIES
-        #     - "Wn", normal component of the total induced velocity by
-        #       the horshoe vortices, stored in the matrix "AIC" where the
-        #       element Aij is the velocity induced by the horshoe vortex
-        #       in panel j on panel i
-        #     - also the induced velocity by *only* the trailing vortices
-        #        "Wi" on panel i is calculated and stored in the Panel object
-        #       attribute "accul_trail_induced_vel"
+        # After the calculation of the AIC matrix, to impose the boundary
+        # condition we must also calculate the normal component of the
+        # upstream normal velocity "Vinf_n". This will depend on the angle
+        # of attack -"alpha"- and the camber local slope.
         N = len(panels)
-
-        if (type(self.AIC) == int):
-            # In case it is the first time the method is called, it proceeds
-            # to compute the AIC matrix
-
-            AIC = np.zeros((N, N))  # Aerodynamic Influence Coefficient matrix
-
-            for panel_pivot, i in zip(panels, range(N)):
-                Wi_ = 0
-                for panel, j in zip(panels, range(N)):
-                    Wn, Wi = panel.induced_velocity(panel_pivot.CP)
-                    AIC[i, j] = Wn  # induced normal velocity by horshoe vortices
-                    Wi_ += Wi  # induced normal velocity by trailing vortices
-
-                panel_pivot.accul_trail_ind_vel = Wi_
-                panel_pivot.alpha_ind = np.arctan(abs(Wi_)/V)  # induced AoA(rad)
-
-            self.AIC = AIC
-
-        #   (b) UPSTREAM NORMAL VELOCITY
-        #     It will depend on the angle of attack -"alpha"- and the camber
-        #     local slope (at each panel' position within the local chord)
         Vinf_n = np.zeros(N)  # upstream (normal) velocity
 
         for panel, i in zip(panels, range(N)):
             panel.Vinf_n = -V * (alpha - panel.loc_slope)
             Vinf_n[i] = panel.Vinf_n
+
+            # induced AoA(rad):
+            panel.alpha_ind = np.arctan(abs(panel.accul_trail_ind_vel) / V)
 
         # 2. CIRCULATION (Γ or gamma)
         # by solving the linear equation (AX = Y) where X = gamma
