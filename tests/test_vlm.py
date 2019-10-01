@@ -172,3 +172,25 @@ class test_BertinSmith(ut.TestCase):
         expected_gamma = array([0.0273, 0.0287, 0.0286, 0.025,
                                 0.025, 0.0286, 0.0287, 0.0273])
         assert_almost_equal(calculated_gamma, expected_gamma, decimal=4)
+
+    def test_cl(self):
+        plane = PyVLM()
+
+        A = array([0, 0])
+        B = array([0.5, 0.5])
+        leading_edges_position = [A, B]
+        chord_length = [.2, .2]
+        n, m = 1, 4
+        plane.add_surface(leading_edges_position, chord_length, n, m)
+
+        alpha = 0  # degrees
+        CL, CD = plane.vlm(alpha, False)
+        calculated_cl = CL / pi
+        expected_cl = 0
+        assert_almost_equal(calculated_cl, expected_cl, decimal=3)
+
+        alpha = rad2deg(1)  # degrees
+        CL, CD = plane.vlm(alpha, False)
+        calculated_cl = CL / pi
+        expected_cl = 1.096
+        assert_almost_equal(calculated_cl, expected_cl, decimal=3)
