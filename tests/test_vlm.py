@@ -5,7 +5,7 @@
 
 import pytest
 import unittest as ut
-from numpy import array, deg2rad, pi
+from numpy import array, deg2rad, rad2deg, pi
 from numpy.testing import assert_almost_equal
 
 from vlm import PyVLM
@@ -121,7 +121,7 @@ class test_BertinSmith(ut.TestCase):
                            array([0.575, 0.375]), array([0.7, 0.5])]
         assert_almost_equal(calculated_points, expected_points)
 
-    def test_vlm(self):
+    def test_AIC(self):
         plane = PyVLM()
 
         A = array([0, 0])
@@ -131,9 +131,7 @@ class test_BertinSmith(ut.TestCase):
         n, m = 1, 4
         plane.add_surface(leading_edges_position, chord_length, n, m)
 
-        alpha = 1  # rad
-        plane.vlm(alpha, True)
-        calculated_AIC = plane.AIC
+        calculated_AIC = plane.AIC * 4 * pi
         expected_AIC = array([[-71.5187, 11.2933, 1.0757, 0.3775,
                                0.2659, 0.5887, 2.0504, 18.515],
                              [20.2174, -71.5187, 11.2933, 1.0757,
@@ -150,5 +148,27 @@ class test_BertinSmith(ut.TestCase):
                               1.0757, 11.2933, -71.5187, 20.2174],
                              [18.515, 2.0504, 0.5887, 0.2659,
                               0.3775, 1.0757, 11.2933, -71.5187]])
+        assert_almost_equal(calculated_AIC, expected_AIC, decimal=4)
 
-        assert_almost_equal(calculated_AIC*4*pi, expected_AIC, decimal=4)
+    def test_gamma(self):
+        plane = PyVLM()
+
+        A = array([0, 0])
+        B = array([0.5, 0.5])
+        leading_edges_position = [A, B]
+        chord_length = [.2, .2]
+        n, m = 1, 4
+        plane.add_surface(leading_edges_position, chord_length, n, m)
+
+        alpha = 0  # degrees
+        plane.vlm(alpha, False)
+        calculated_gamma = array([p.gamma / (4 * pi) for p in plane.Panels])
+        expected_gamma = array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        assert_almost_equal(calculated_gamma, expected_gamma, decimal=4)
+
+        alpha = rad2deg(1)  # degrees
+        plane.vlm(alpha, False)
+        calculated_gamma = array([p.gamma / (4 * pi) for p in plane.Panels])
+        expected_gamma = array([0.0273, 0.0287, 0.0286, 0.025,
+                                0.025, 0.0286, 0.0287, 0.0273])
+        assert_almost_equal(calculated_gamma, expected_gamma, decimal=4)
