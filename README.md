@@ -34,7 +34,9 @@ plane.show_mesh(print_mesh=False, plot_mesh=True)
 
 This would produce the following plotting:
 
-<img src="/img/bs_show_mesh.png" alt="drawing" width="450"/>
+<p align="center">
+	<img src="/img/bs_show_mesh.png" alt="drawing" width="450"/>
+</p>
 
 ```Python
 alpha = 1  # AOA in degrees
@@ -43,8 +45,9 @@ plane.vlm(alpha, print_output=True)
 
 This would produce the following print:
 
-<img src="/img/bs_print_output.png" alt="drawing" width="600"/>
-
+<p align="center">
+	<img src="/img/bs_print_output.png" alt="drawing" width="600" align="center"/>
+</p>
 
 ### Installation
 
