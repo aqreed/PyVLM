@@ -15,11 +15,11 @@
 
 #### Example
 Taking the example 7.2 from Bertin, J.J. and Smith, M.L., "Aerodynamics for Engineer":
+
 ```Python
 from numpy import array
 import matplotlib.pyplot as plt
 from vlm import PyVLM
-
 
 plane = PyVLM()
 
@@ -28,7 +28,9 @@ B = array([0.5, 0.5])
 leading_edges_position = [A, B]
 chord_length = [.2, .2]
 n, m = 1, 4
-plane.add_surface(leading_edges_position, chord_length, n, m, mirror=True)
+
+plane.add_surface(leading_edges_position, chord_length, n, m,
+	              mirror=True, airfoil=flat_plate())
 plane.show_mesh(print_mesh=False, plot_mesh=True)
 ```
 
@@ -37,6 +39,8 @@ This would produce the following plotting:
 <p align="center">
 	<img src="/img/bs_show_mesh.png" alt="drawing" width="450"/>
 </p>
+
+With a surface already define, the Vortex Lattice Method can be used:
 
 ```Python
 alpha = 1  # AOA in degrees
