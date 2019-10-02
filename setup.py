@@ -9,7 +9,7 @@ setup(
     description='Python Vortex Lattice Method',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version="0.0.1",
+    version="0.0.2",
     url='https://github.com/aqreed/PyVLM',
     packages=['vlm'],
     install_requires=['numpy', 'matplotlib'],
