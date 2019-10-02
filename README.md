@@ -31,17 +31,20 @@ n, m = 1, 4
 plane.add_surface(leading_edges_position, chord_length, n, m, mirror=True)
 plane.show_mesh(print_mesh=False, plot_mesh=True)
 ```
+
 This would produce the following plotting:
+
 <img src="/img/bs_show_mesh.png" alt="drawing" width="450"/>
 
 ```Python
 alpha = 1  # AOA in degrees
 plane.vlm(alpha, print_output=True)
 ```
-This would produce the following print:
-<img src="/img/bs_print_output.png" alt="drawing" width="450"/>
 
-You can tinker online with Jupyter notebook [here](https://mybinder.org/v2/gh/aqreed/PyVLM/master?filepath=examples).
+This would produce the following print:
+
+<img src="/img/bs_print_output.png" alt="drawing" width="600"/>
+
 
 ### Installation
 
