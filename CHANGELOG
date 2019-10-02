@@ -1,0 +1,25 @@
+ # Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+
+## [0.0.1] - 2019-09-23
+### Added
+- First release
+
+## [0.0.2] - 2019-10-02
+### Added
+- a mirror option, so a non-symmetrical wing can be defined
+- a new panel attribute "loc_slope" to store the panel local slope
+- tests for geometry, vortices, airfoil and vlm modules. Validation tests from Bertin & Smith reference for AIC, gamma and CL calculation
+
+### Changed
+- renamed the "add_wing" method to "add_surface". Moved the calculation of the AIC matrix and the leading edge input check to the "add_surface" method
+- renamed the "check_mesh" method to "show_mesh"
+- renamed "camber_gradient" to "camber_slope"
+- overall code readability, to make it look more pythonic and less matlabic. Improved plotting
+
+### Removed
+- script versions of the examples (pilatusPC12, airfoils, mesh and vortex)
