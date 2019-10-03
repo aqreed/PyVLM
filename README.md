@@ -14,11 +14,10 @@
 | Requires | Numpy, Matplotlib |
 
 #### Example
-Taking the example 7.2 from Bertin, J.J. and Smith, M.L., "Aerodynamics for Engineer":
+Taking the example 7.2 from Bertin, J.J. and Smith, M.L., "Aerodynamics for Engineers":
 
 ```Python
 from numpy import array
-import matplotlib.pyplot as plt
 from vlm import PyVLM
 
 plane = PyVLM()
@@ -29,9 +28,11 @@ leading_edges_position = [A, B]
 chord_length = [.2, .2]
 n, m = 1, 4
 
-plane.add_surface(leading_edges_position, chord_length, n, m,
-	              mirror=True, airfoil=flat_plate())
-plane.show_mesh(print_mesh=False, plot_mesh=True)
+plane.add_surface(leading_edges_position,
+	          chord_length, n, m,
+	          mirror=True, airfoil=flat_plate())
+plane.show_mesh(print_mesh=False,
+	          plot_mesh=True)
 ```
 
 This would produce the following plotting:
@@ -40,7 +41,7 @@ This would produce the following plotting:
 	<img src="/img/bs_show_mesh.png" alt="drawing" width="450"/>
 </p>
 
-With a surface already define, the Vortex Lattice Method can be used:
+With a surface already defined, the Vortex Lattice Method can be used:
 
 ```Python
 alpha = 1  # AOA in degrees
@@ -53,9 +54,15 @@ This would produce the following print:
 	<img src="/img/bs_print_output.png" alt="drawing" width="600" align="center"/>
 </p>
 
+---
+**NOTE**:
+PyVLM is under development and might change in the near future. In particular, we are working on improving the drag calculation method.
+
+---
+
 ### Installation
 
-PyVLM has been written in Python3, and its version v0.1.1 is available in PyPi. It can be installed using:
+PyVLM has been written in Python 3, and its version v0.1.2 is available in PyPi. It can be installed using:
 
 ```sh
 $ pip install vlm
@@ -70,12 +77,6 @@ $ pip install -e .
 ```
 
 Please find a example notebook on the ['examples'](https://github.com/aqreed/PyVLM/tree/master/examples) folder that you can open locally, or just try [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/aqreed/PyVLM/master?filepath=examples) to launch online interactive Jupyter notebooks.
-
----
-**NOTE**:
-PyVLM is under development and might change in the near future. In particular, we are working on improving the drag calculation method.
-
----
 
 ### Dependencies
 
@@ -104,3 +105,8 @@ Please feel free to open an [issue](https://github.com/aqreed/PyVLM/issues) on G
 ### License
 
 MIT (see `COPYING`)
+
+### References
+
+* Bertin, J.J., Smith, M.L., "Aerodynamics for Engineers", 3rd Edition, Prentice Hall, 1998.
+* Gandia, F., Gonzalo, J., Margot, X., Meseguer, J., "Fundamentos de los métodos numéricos en aerodinámica", 1ª Edición, Garceta, 2013. 
